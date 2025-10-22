@@ -1,0 +1,11 @@
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\bin\Debug\net8.0\ByCoders.CNAB.Domain.deps.json
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\bin\Debug\net8.0\ByCoders.CNAB.Domain.dll
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\bin\Debug\net8.0\ByCoders.CNAB.Domain.pdb
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\ByCoders.CNAB.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\ByCoders.CNAB.Domain.AssemblyInfoInputs.cache
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\ByCoders.CNAB.Domain.AssemblyInfo.cs
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\ByCoders.CNAB.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\ByCoders.CNAB.Domain.dll
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\refint\ByCoders.CNAB.Domain.dll
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\ByCoders.CNAB.Domain.pdb
+C:\Users\Rafae\OneDrive\Documents\Projetos\Test ByCoders\ByCoders.CNAB\ByCoders.CNAB.Domain\obj\Debug\net8.0\ref\ByCoders.CNAB.Domain.dll
