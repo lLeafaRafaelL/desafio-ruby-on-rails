@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
+      "projectUniqueName": "c:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
       "projectName": "ByCoders.CNAB.Domain",
-      "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
+      "projectPath": "c:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
       "packagesPath": "C:\\Users\\Rafae\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\obj\\",
+      "outputPath": "c:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ByCoders.CNAB.Domain.Transactions;
 using ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Builders;
+using ByCoders.CNAB.Domain.Transactions.Models;
 
 namespace ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Configurations;
 

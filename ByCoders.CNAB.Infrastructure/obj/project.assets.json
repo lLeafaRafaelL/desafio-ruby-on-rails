@@ -2,6 +2,9 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "EFCore.BulkExtensions/9.0.2": {
+        "type": "package"
+      },
       "EFCore.NamingConventions/9.0.0": {
         "type": "package",
         "dependencies": {
@@ -663,19 +666,6 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.OpenApi/1.6.25": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
-            "related": ".pdb;.xml"
-          }
-        }
-      },
       "Mono.TextTemplating/3.0.0": {
         "type": "package",
         "dependencies": {
@@ -722,41 +712,6 @@
         "runtime": {
           "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
             "related": ".xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Swagger/9.0.6": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.OpenApi": "1.6.25"
-        },
-        "compile": {
-          "lib/net8.0/Swashbuckle.AspNetCore.Swagger.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/Swashbuckle.AspNetCore.Swagger.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
-      },
-      "Swashbuckle.AspNetCore.SwaggerGen/9.0.6": {
-        "type": "package",
-        "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "9.0.6"
-        },
-        "compile": {
-          "lib/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -1040,6 +995,20 @@
     }
   },
   "libraries": {
+    "EFCore.BulkExtensions/9.0.2": {
+      "sha512": "d22ck8GIjmXopL8gmn6bbCwrT8FScWg6lbF0UVCQL06QYRwHFYqK9CPAkBZRB0BCl9nd8ajJwNc7UtMSy4E2oA==",
+      "type": "package",
+      "path": "efcore.bulkextensions/9.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "EFCoreBulk.png",
+        "LICENSE.txt",
+        "README.md",
+        "efcore.bulkextensions.9.0.2.nupkg.sha512",
+        "efcore.bulkextensions.nuspec"
+      ]
+    },
     "EFCore.NamingConventions/9.0.0": {
       "sha512": "heKIYzPdEWx+Ba4xuG6jfEssW9rEi7I0lX38eoN7wo7qgg9uw7nn8UEmDQfwGEYPzSDpetCVANnDr5tqt2Asjg==",
       "type": "package",
@@ -2499,21 +2468,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.OpenApi/1.6.25": {
-      "sha512": "ZahSqNGtNV7N0JBYS/IYXPkLVexL/AZFxo6pqxv6A7Uli7Q7zfitNjkaqIcsV73Ukzxi4IlJdyDgcQiMXiH8cw==",
-      "type": "package",
-      "path": "microsoft.openapi/1.6.25",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "lib/netstandard2.0/Microsoft.OpenApi.dll",
-        "lib/netstandard2.0/Microsoft.OpenApi.pdb",
-        "lib/netstandard2.0/Microsoft.OpenApi.xml",
-        "microsoft.openapi.1.6.25.nupkg.sha512",
-        "microsoft.openapi.nuspec"
-      ]
-    },
     "Mono.TextTemplating/3.0.0": {
       "sha512": "YqueG52R/Xej4VVbKuRIodjiAhV0HR/XVbLbNrJhCZnzjnSjgMJ/dCdV0akQQxavX6hp/LC6rqLGLcXeQYU7XA==",
       "type": "package",
@@ -2561,42 +2515,6 @@
         "npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
         "npgsql.entityframeworkcore.postgresql.nuspec",
         "postgresql.png"
-      ]
-    },
-    "Swashbuckle.AspNetCore.Swagger/9.0.6": {
-      "sha512": "Bgyc8rWRAYwDrzjVHGbavvNE38G1Dfgf1McHYm+WUr4TxkvEAXv8F8B1z3Kmz4BkDCKv9A/1COa2t7+Ri5+pLg==",
-      "type": "package",
-      "path": "swashbuckle.aspnetcore.swagger/9.0.6",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net8.0/Swashbuckle.AspNetCore.Swagger.dll",
-        "lib/net8.0/Swashbuckle.AspNetCore.Swagger.pdb",
-        "lib/net8.0/Swashbuckle.AspNetCore.Swagger.xml",
-        "lib/net9.0/Swashbuckle.AspNetCore.Swagger.dll",
-        "lib/net9.0/Swashbuckle.AspNetCore.Swagger.pdb",
-        "lib/net9.0/Swashbuckle.AspNetCore.Swagger.xml",
-        "package-readme.md",
-        "swashbuckle.aspnetcore.swagger.9.0.6.nupkg.sha512",
-        "swashbuckle.aspnetcore.swagger.nuspec"
-      ]
-    },
-    "Swashbuckle.AspNetCore.SwaggerGen/9.0.6": {
-      "sha512": "yYrDs5qpIa4UXP+a02X0ZLQs6HSd1C8t6hF6J1fnxoawi3PslJg1yUpLBS89HCbrDACzmwEGG25il+8aa0zdnw==",
-      "type": "package",
-      "path": "swashbuckle.aspnetcore.swaggergen/9.0.6",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll",
-        "lib/net8.0/Swashbuckle.AspNetCore.SwaggerGen.pdb",
-        "lib/net8.0/Swashbuckle.AspNetCore.SwaggerGen.xml",
-        "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll",
-        "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.pdb",
-        "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.xml",
-        "package-readme.md",
-        "swashbuckle.aspnetcore.swaggergen.9.0.6.nupkg.sha512",
-        "swashbuckle.aspnetcore.swaggergen.nuspec"
       ]
     },
     "System.CodeDom/6.0.0": {
@@ -3056,13 +2974,13 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "ByCoders.CNAB.Domain >= 1.0.0",
+      "EFCore.BulkExtensions >= 9.0.2",
       "EFCore.NamingConventions >= 9.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.10",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.10",
       "Microsoft.EntityFrameworkCore.Relational >= 9.0.10",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.10",
-      "Npgsql.EntityFrameworkCore.PostgreSQL >= 9.0.4",
-      "Swashbuckle.AspNetCore.SwaggerGen >= 9.0.6"
+      "Npgsql.EntityFrameworkCore.PostgreSQL >= 9.0.4"
     ]
   },
   "packageFolders": {
@@ -3071,11 +2989,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
+      "projectUniqueName": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
       "projectName": "ByCoders.CNAB.Infrastructure",
-      "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
+      "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\Rafae\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\obj\\",
+      "outputPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -3092,8 +3010,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj": {
-              "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj"
+            "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj": {
+              "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj"
             }
           }
         }
@@ -3113,6 +3031,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "EFCore.BulkExtensions": {
+            "target": "Package",
+            "version": "[9.0.2, )"
+          },
           "EFCore.NamingConventions": {
             "target": "Package",
             "version": "[9.0.0, )"
@@ -3140,10 +3062,6 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": {
             "target": "Package",
             "version": "[9.0.4, )"
-          },
-          "Swashbuckle.AspNetCore.SwaggerGen": {
-            "target": "Package",
-            "version": "[9.0.6, )"
           }
         },
         "imports": [

@@ -1,6 +1,6 @@
 ﻿namespace ByCoders.CNAB.Domain.Transactions;
 
-public class Rent : Transaction
+public sealed class Rent : Transaction
 {
     public Rent(DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
         : base(TransactionTypes.Rent, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)

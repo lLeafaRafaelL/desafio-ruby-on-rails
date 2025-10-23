@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ByCoders.CNAB.Domain.Transactions;
+using ByCoders.CNAB.Domain.Transactions.Models;
 
 namespace ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Builders;
 

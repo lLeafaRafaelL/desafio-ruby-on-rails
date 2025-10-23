@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj": {}
+    "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj": {
+    "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
         "projectName": "ByCoders.CNAB.Domain",
-        "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
+        "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj",
         "packagesPath": "C:\\Users\\Rafae\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\obj\\",
+        "outputPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -64,14 +64,14 @@
         }
       }
     },
-    "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj": {
+    "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
         "projectName": "ByCoders.CNAB.Infrastructure",
-        "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\ByCoders.CNAB.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Rafae\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -88,8 +88,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj": {
-                "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\ByCoders.CNAB\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj"
+              "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj": {
+                "projectPath": "C:\\Users\\Rafae\\OneDrive\\Documents\\Projetos\\Test ByCoders\\desafio-ruby-on-rails\\ByCoders.CNAB.Domain\\ByCoders.CNAB.Domain.csproj"
               }
             }
           }
@@ -109,6 +109,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "EFCore.BulkExtensions": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
             "EFCore.NamingConventions": {
               "target": "Package",
               "version": "[9.0.0, )"
@@ -136,10 +140,6 @@
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.4, )"
-            },
-            "Swashbuckle.AspNetCore.SwaggerGen": {
-              "target": "Package",
-              "version": "[9.0.6, )"
             }
           },
           "imports": [
