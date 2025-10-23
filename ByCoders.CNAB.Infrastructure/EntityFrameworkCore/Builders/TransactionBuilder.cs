@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ByCoders.CNAB.Domain.Transactions.Models;
 
 namespace ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Builders;
@@ -50,15 +50,6 @@ public class TransactionBuilder
             .IsRequired()
             .IsUnicode(false)
             .HasMaxLength(11);
-        });
-
-        builder.OwnsOne(x => x.Card, card =>
-        {
-            card
-            .Property(x => x.Number)
-            .IsRequired()
-            .IsUnicode(false)
-            .HasMaxLength(12);
         });
 
         builder.OwnsOne(x => x.Card, card =>

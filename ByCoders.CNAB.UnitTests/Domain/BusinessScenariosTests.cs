@@ -19,7 +19,7 @@ public class BusinessScenariosTests
         var transactions = new List<Transaction>
         {
             new Sale(date, time, 10000, beneficiary, card, store),      // +100.00
-            new Debit(date, time, 5000, beneficiary, card, store),      // -50.00
+            new Debit(date, time, 5000, beneficiary, card, store),      // +50.00 (ENTRADA conforme README.md)
             new Credit(date, time, 20000, beneficiary, card, store),    // +200.00
             new BankSlip(date, time, 3000, beneficiary, card, store),   // -30.00
             new Funding(date, time, 15000, beneficiary, card, store)    // -150.00
@@ -29,7 +29,7 @@ public class BusinessScenariosTests
         var balance = transactions.Sum(t => t.TransactionValue);
 
         // Assert
-        balance.Should().Be(70m); // +100 -50 +200 -30 -150 = +70
+        balance.Should().Be(170m); // +100 +50 +200 -30 -150 = +170
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class BusinessScenariosTests
         {
             new Sale(date, time, 10000, beneficiary, card, store1),     // Store1: +100
             new Sale(date, time, 5000, beneficiary, card, store1),      // Store1: +50
-            new Debit(date, time, 2000, beneficiary, card, store1),     // Store1: -20
+            new Debit(date, time, 2000, beneficiary, card, store1),     // Store1: +20 (ENTRADA)
             new Sale(date, time, 15000, beneficiary, card, store2),     // Store2: +150
             new BankSlip(date, time, 3000, beneficiary, card, store2)   // Store2: -30
         };
@@ -62,7 +62,7 @@ public class BusinessScenariosTests
             .Sum(t => t.TransactionValue);
 
         // Assert
-        store1Balance.Should().Be(130m); // +100 +50 -20 = +130
+        store1Balance.Should().Be(170m); // +100 +50 +20 = +170
         store2Balance.Should().Be(120m); // +150 -30 = +120
     }
 
@@ -207,7 +207,7 @@ public class BusinessScenariosTests
         {
             new Sale(date, time, 10000, beneficiary, card, store),      // Cash In: +100
             new Credit(date, time, 5000, beneficiary, card, store),     // Cash In: +50
-            new Debit(date, time, 2000, beneficiary, card, store),      // Cash Out: -20
+            new Debit(date, time, 2000, beneficiary, card, store),      // Cash In: +20 (ENTRADA)
             new BankSlip(date, time, 3000, beneficiary, card, store)    // Cash Out: -30
         };
 
@@ -216,8 +216,8 @@ public class BusinessScenariosTests
         var cashOut = transactions.Where(t => t.TransactionValue < 0).Sum(t => t.TransactionValue);
 
         // Assert
-        cashIn.Should().Be(150m);
-        cashOut.Should().Be(-50m);
+        cashIn.Should().Be(170m);  // +100 +50 +20 = +170
+        cashOut.Should().Be(-30m); // -30
     }
 
     [Fact]
@@ -265,9 +265,9 @@ public class BusinessScenariosTests
         report[0].Store.Should().Be(store2);
         report[0].Balance.Should().Be(332m); // 132 + 200
         
-        // Store 1
+        // Store 1 - Debit agora é ENTRADA (+)
         var store1Report = report.First(r => r.Store == store1);
-        store1Report.Balance.Should().Be(-10m); // 142 - 152
+        store1Report.Balance.Should().Be(294m); // +142 +152 = +294
         
         // Store 3 should have negative balance
         var store3Report = report.First(r => r.Store == store3);

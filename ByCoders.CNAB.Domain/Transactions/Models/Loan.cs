@@ -1,5 +1,10 @@
-﻿namespace ByCoders.CNAB.Domain.Transactions.Models;
+namespace ByCoders.CNAB.Domain.Transactions.Models;
 
+/// <summary>
+/// Recebimento Empréstimo - Tipo 5
+/// Natureza: ENTRADA (+)
+/// Conforme README.md do projeto
+/// </summary>
 public class LoanReceipt : Transaction
 {
     public LoanReceipt(DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)

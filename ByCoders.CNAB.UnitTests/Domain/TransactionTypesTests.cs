@@ -16,7 +16,7 @@ public class TransactionTypesTests
     #region Cash In Transactions (Positive Values)
 
     [Fact]
-    public void Debit_ShouldHaveNegativeValue()
+    public void Debit_ShouldHavePositiveValue()
     {
         // Arrange & Act
         var transaction = new Debit(_date, _time, Amount, _beneficiary, _card, _store);
@@ -24,7 +24,7 @@ public class TransactionTypesTests
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.Debit);
         transaction.AmountCNAB.Should().Be(Amount);
-        transaction.TransactionValue.Should().Be(-100m); // Negative: Cash Out
+        transaction.TransactionValue.Should().Be(100m); // Positive: Cash In (conforme README.md)
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class TransactionTypesTests
         var amount = 12345m; // R$ 123.45
 
         // Act
-        var transaction = new Debit(_date, _time, amount, _beneficiary, _card, _store);
+        var transaction = new BankSlip(_date, _time, amount, _beneficiary, _card, _store);
 
         // Assert
         transaction.TransactionValue.Should().Be(-123.45m);
@@ -262,7 +262,7 @@ public class TransactionTypesTests
     #region Business Rules
 
     [Theory]
-    [InlineData(TransactionTypes.Debit, -1)]
+    [InlineData(TransactionTypes.Debit, 1)]  // ENTRADA (+) conforme README.md
     [InlineData(TransactionTypes.BankSlip, -1)]
     [InlineData(TransactionTypes.Funding, -1)]
     [InlineData(TransactionTypes.Rent, -1)]

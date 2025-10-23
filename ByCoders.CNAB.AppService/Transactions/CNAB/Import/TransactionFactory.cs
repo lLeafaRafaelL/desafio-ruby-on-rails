@@ -1,5 +1,6 @@
 using ByCoders.CNAB.Core.Results;
 using ByCoders.CNAB.Domain.Transactions.Models;
+using FluentValidation;
 
 namespace ByCoders.CNAB.AppService.Transactions.CNAB.Import;
 
@@ -11,14 +12,30 @@ public record CNABLineDataDto(TransactionTypes TransactionType, DateOnly Date, d
 
 /// <summary>
 /// Factory Pattern - Creates the correct Transaction subclass based on type with Result Pattern
+/// Uses FluentValidation for data validation
 /// </summary>
-public class TransactionFactory
+public class TransactionFactory : ITransactionFactory
 {
+    private readonly IValidator<CNABLineDataDto> _validator;
+
+    public TransactionFactory(IValidator<CNABLineDataDto> validator)
+    {
+        _validator = validator;
+    }
+
+    // Construtor sem parâmetros para manter compatibilidade com testes existentes
+    public TransactionFactory() : this(new CNABLineDataDtoValidator())
+    {
+    }
+
     public Result<Transaction> Create(CNABLineDataDto data)
     {
-        var validationError = ValidateData(data);
-        if (!string.IsNullOrEmpty(validationError))
-            return Result<Transaction>.Failure(validationError);
+        if (data == null)
+            return Result<Transaction>.Failure("Transaction data cannot be null");
+
+        var validationResult = ValidateData(data);
+        if (validationResult.IsFailure)
+            return Result<Transaction>.Failure(validationResult.Error);
 
         try
         {
@@ -48,26 +65,16 @@ public class TransactionFactory
         }
     }
 
-    private string ValidateData(CNABLineDataDto data)
+    private Result ValidateData(CNABLineDataDto data)
     {
-        if (data == null)
-            return "Transaction data cannot be null";
+        var validationResult = _validator.Validate(data);
 
-        if (string.IsNullOrWhiteSpace(data.CPF))
-            return "CPF cannot be empty";
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            return Result.Failure(errors);
+        }
 
-        if (string.IsNullOrWhiteSpace(data.CardNumber))
-            return "Card number cannot be empty";
-
-        if (string.IsNullOrWhiteSpace(data.StoreName))
-            return "Store name cannot be empty";
-
-        if (string.IsNullOrWhiteSpace(data.StoreOwner))
-            return "Store owner cannot be empty";
-
-        if (data.Amount < 0)
-            return "Amount cannot be negative";
-
-        return string.Empty; // No validation errors
+        return Result.Success();
     }
 }

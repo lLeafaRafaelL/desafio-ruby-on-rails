@@ -14,8 +14,8 @@ public class CNABLineParser
         if (string.IsNullOrWhiteSpace(line))
             return Result<CNABLineDataDto>.Failure("CNAB line cannot be empty");
 
-        if (line.Length < 81)
-            return Result<CNABLineDataDto>.Failure($"CNAB line must be at least 81 characters. Got {line.Length}");
+        if (line.Length < 80)
+            return Result<CNABLineDataDto>.Failure($"CNAB line must be at least 80 characters. Got {line.Length}");
 
         try
         {
@@ -28,7 +28,7 @@ public class CNABLineParser
                 CardNumber: line.Substring(30, 12).Trim(),
                 Time: ParseTime(line.Substring(42, 6)),
                 StoreOwner: line.Substring(48, 14).Trim(),
-                StoreName: line.Substring(62, 19).Trim()
+                StoreName: line.Substring(62, 18).Trim()
             );
 
             return Result<CNABLineDataDto>.Success(data);
@@ -66,7 +66,7 @@ public class CNABLineParser
         if (!long.TryParse(amountString, out long amount))
             throw new ArgumentException($"Invalid amount format: {amountString}");
 
-        return amount;
+        return amount / 100m;
     }
 
     private TimeOnly ParseTime(string timeString)

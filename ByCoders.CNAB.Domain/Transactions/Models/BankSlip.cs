@@ -1,5 +1,10 @@
-﻿namespace ByCoders.CNAB.Domain.Transactions.Models;
+namespace ByCoders.CNAB.Domain.Transactions.Models;
 
+/// <summary>
+/// Boleto - Tipo 2
+/// Natureza: SAÍDA (-)
+/// Conforme README.md do projeto
+/// </summary>
 public class BankSlip : Transaction
 {
     public BankSlip(DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)

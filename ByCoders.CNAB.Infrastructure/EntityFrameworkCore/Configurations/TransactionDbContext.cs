@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Builders;
 using ByCoders.CNAB.Domain.Transactions.Models;
 
@@ -8,9 +8,11 @@ public class TransactionDbContext : DbContext
 {
     public TransactionDbContext(DbContextOptions<TransactionDbContext> options) : base(options) { }
 
+    public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<TransactionType> TransactionTypes { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         base.OnModelCreating(modelBuilder);
 
         TransactionBuilder.Build(modelBuilder.Entity<Transaction>());

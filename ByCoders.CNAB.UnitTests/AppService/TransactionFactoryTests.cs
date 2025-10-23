@@ -25,9 +25,10 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<Debit>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.Debit);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType<Debit>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.Debit);
     }
 
     [Fact]
@@ -40,8 +41,8 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<BankSlip>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.BankSlip);
+        result.Value.Should().BeOfType<BankSlip>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.BankSlip);
     }
 
     [Fact]
@@ -54,8 +55,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<Funding>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.Funding);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<Funding>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.Funding);
     }
 
     [Fact]
@@ -68,8 +70,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<Credit>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.Credit);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<Credit>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.Credit);
     }
 
     [Fact]
@@ -82,8 +85,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<LoanReceipt>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.LoanReceipt);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<LoanReceipt>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.LoanReceipt);
     }
 
     [Fact]
@@ -96,8 +100,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<Sale>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.Sales);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<Sale>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.Sales);
     }
 
     [Fact]
@@ -110,8 +115,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<TEDReceipt>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.TEDReceipt);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<TEDReceipt>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.TEDReceipt);
     }
 
     [Fact]
@@ -124,8 +130,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<DOCReceipt>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.DOCReceipt);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<DOCReceipt>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.DOCReceipt);
     }
 
     [Fact]
@@ -138,8 +145,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().BeOfType<Rent>();
-        result.TransactionType.Id.Should().Be((int)TransactionTypes.Rent);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<Rent>();
+        result.Value.TransactionType.Id.Should().Be((int)TransactionTypes.Rent);
     }
 
     [Fact]
@@ -169,30 +177,32 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.TransactionDate.Should().Be(expectedDate);
-        result.TransactionTime.Should().Be(expectedTime);
-        result.AmountCNAB.Should().Be(expectedAmount);
-        result.Beneficiary.Document.Should().Be(expectedCpf);
-        result.Card.Number.Should().Be(expectedCard);
-        result.Store.Owner.Should().Be(expectedOwner);
-        result.Store.Name.Should().Be(expectedStore);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.TransactionDate.Should().Be(expectedDate);
+        result.Value.TransactionTime.Should().Be(expectedTime);
+        result.Value.AmountCNAB.Should().Be(expectedAmount);
+        result.Value.Beneficiary.Document.Should().Be(expectedCpf);
+        result.Value.Card.Number.Should().Be(expectedCard);
+        result.Value.Store.Owner.Should().Be(expectedOwner);
+        result.Value.Store.Name.Should().Be(expectedStore);
     }
 
     [Fact]
-    public void Create_NullData_ShouldThrowArgumentNullException()
+    public void Create_NullData_ShouldReturnFailure()
     {
         // Act
-        var act = () => _sut.Create(null);
+        var result = _sut.Create(null);
 
         // Assert
-        act.Should().Throw<ArgumentNullException>();
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Transaction data cannot be null");
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_InvalidCPF_ShouldThrowArgumentException(string cpf)
+    public void Create_InvalidCPF_ShouldReturnFailure(string cpf)
     {
         // Arrange
         var data = new CNABLineDataDto(
@@ -207,18 +217,18 @@ public class TransactionFactoryTests
         );
 
         // Act
-        var act = () => _sut.Create(data);
+        var result = _sut.Create(data);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("CPF cannot be empty");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("CPF cannot be empty");
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_InvalidCardNumber_ShouldThrowArgumentException(string cardNumber)
+    public void Create_InvalidCardNumber_ShouldReturnFailure(string cardNumber)
     {
         // Arrange
         var data = new CNABLineDataDto(
@@ -233,18 +243,18 @@ public class TransactionFactoryTests
         );
 
         // Act
-        var act = () => _sut.Create(data);
+        var result = _sut.Create(data);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Card number cannot be empty");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Card number cannot be empty");
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_InvalidStoreName_ShouldThrowArgumentException(string storeName)
+    public void Create_InvalidStoreName_ShouldReturnFailure(string storeName)
     {
         // Arrange
         var data = new CNABLineDataDto(
@@ -259,18 +269,18 @@ public class TransactionFactoryTests
         );
 
         // Act
-        var act = () => _sut.Create(data);
+        var result = _sut.Create(data);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Store name cannot be empty");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Store name cannot be empty");
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_InvalidStoreOwner_ShouldThrowArgumentException(string storeOwner)
+    public void Create_InvalidStoreOwner_ShouldReturnFailure(string storeOwner)
     {
         // Arrange
         var data = new CNABLineDataDto(
@@ -285,15 +295,15 @@ public class TransactionFactoryTests
         );
 
         // Act
-        var act = () => _sut.Create(data);
+        var result = _sut.Create(data);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Store owner cannot be empty");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Store owner cannot be empty");
     }
 
     [Fact]
-    public void Create_NegativeAmount_ShouldThrowArgumentException()
+    public void Create_NegativeAmount_ShouldReturnFailure()
     {
         // Arrange
         var data = new CNABLineDataDto(
@@ -308,11 +318,11 @@ public class TransactionFactoryTests
         );
 
         // Act
-        var act = () => _sut.Create(data);
+        var result = _sut.Create(data);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Amount cannot be negative");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Amount cannot be negative");
     }
 
     [Fact]
@@ -325,8 +335,9 @@ public class TransactionFactoryTests
         var result = _sut.Create(data);
 
         // Assert
-        result.Should().NotBeNull();
-        result.AmountCNAB.Should().Be(0);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value.AmountCNAB.Should().Be(0);
     }
 
     [Fact]
@@ -341,8 +352,10 @@ public class TransactionFactoryTests
         var result2 = _sut.Create(data2);
 
         // Assert
-        result1.Should().NotBeSameAs(result2);
-        result1.Id.Should().NotBe(result2.Id);
+        result1.IsSuccess.Should().BeTrue();
+        result2.IsSuccess.Should().BeTrue();
+        result1.Value.Should().NotBeSameAs(result2.Value);
+        result1.Value.Id.Should().NotBe(result2.Value.Id);
     }
 
     // Helper method

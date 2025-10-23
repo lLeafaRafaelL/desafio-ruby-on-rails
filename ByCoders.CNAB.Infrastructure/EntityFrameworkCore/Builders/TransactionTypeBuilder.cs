@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ByCoders.CNAB.Domain.Transactions.Models;
 
 namespace ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Builders;
@@ -23,15 +23,15 @@ public class TransactionTypeBuilder
             .HasConversion<byte>();
 
         builder.HasData(
-            new TransactionType(TransactionTypes.Debit, "Débito", TransactionNature.CashOut),
-            new TransactionType(TransactionTypes.BankSlip, "Débito", TransactionNature.CashOut),
-            new TransactionType(TransactionTypes.Funding, "Débito", TransactionNature.CashOut),
-            new TransactionType(TransactionTypes.Credit, "Débito", TransactionNature.CashIn),
-            new TransactionType(TransactionTypes.LoanReceipt, "Débito", TransactionNature.CashIn),
-            new TransactionType(TransactionTypes.Sales, "Débito", TransactionNature.CashIn),
-            new TransactionType(TransactionTypes.TEDReceipt, "Débito", TransactionNature.CashIn),
-            new TransactionType(TransactionTypes.DOCReceipt, "Débito", TransactionNature.CashIn),
-            new TransactionType(TransactionTypes.Rent, "Débito", TransactionNature.CashOut)
-            );
+            new TransactionType(TransactionTypes.Debit, "Debit", TransactionNature.CashIn),               
+            new TransactionType(TransactionTypes.BankSlip, "Bank Slip", TransactionNature.CashOut),       
+            new TransactionType(TransactionTypes.Funding, "Funding", TransactionNature.CashOut),          
+            new TransactionType(TransactionTypes.Credit, "Credit", TransactionNature.CashIn),             
+            new TransactionType(TransactionTypes.LoanReceipt, "Loan Receipt", TransactionNature.CashIn),  
+            new TransactionType(TransactionTypes.Sales, "Sales", TransactionNature.CashIn),               
+            new TransactionType(TransactionTypes.TEDReceipt, "TED Receipt", TransactionNature.CashIn),    
+            new TransactionType(TransactionTypes.DOCReceipt, "DOC Receipt", TransactionNature.CashIn),    
+            new TransactionType(TransactionTypes.Rent, "Rent", TransactionNature.CashOut)                 
+        );
     }
 }

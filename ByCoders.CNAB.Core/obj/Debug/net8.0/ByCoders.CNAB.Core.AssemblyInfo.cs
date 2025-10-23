@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ByCoders.CNAB.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7bc59b0442b14c3947fb30542371ea9e7c803d46")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b88c1280740010c813ad9a62457e9221f2fef956")]
 [assembly: System.Reflection.AssemblyProductAttribute("ByCoders.CNAB.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ByCoders.CNAB.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

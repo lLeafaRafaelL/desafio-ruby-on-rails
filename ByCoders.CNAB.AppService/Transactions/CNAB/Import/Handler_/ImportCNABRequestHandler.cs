@@ -6,24 +6,41 @@ using System.Text;
 using System.Threading.Tasks;
 using ByCoders.CNAB.Core;
 using ByCoders.CNAB.Core.Results;
+using ByCoders.CNAB.Domain.Transactions;
 using ByCoders.CNAB.Domain.Transactions.Models;
 
 namespace ByCoders.CNAB.AppService.Transactions.CNAB.Import;
 
-internal class ImportCNABRequestHandler : IRequestHandler<ImportCNABRequest, ImportCNABResponse>
+/// <summary>
+/// Handler for importing CNAB files
+/// Uses bulk insert for high performance when saving multiple transactions
+/// </summary>
+public class ImportCNABRequestHandler : IRequestHandler<ImportCNABRequest, ImportCNABResponse>
 {
+    private readonly ITransactionRepository _repository;
+    private readonly ITransactionFactory _transactionFactory;
+    private readonly CNABLineParser _parser;
+
+    public ImportCNABRequestHandler(
+        ITransactionRepository repository,
+        ITransactionFactory transactionFactory,
+        CNABLineParser parser)
+    {
+        _repository = repository;
+        _transactionFactory = transactionFactory;
+        _parser = parser;
+    }
+
     public async Task<ImportCNABResponse> Handle(ImportCNABRequest request, CancellationToken cancellationToken)
     {
         var transactions = new List<Transaction>();
         var errors = new List<string>();
-        var factory = new TransactionFactory();
-        var parser = new CNABLineParser();
 
         using (var stream = request.CNABFile.OpenReadStream())
         {
             using (var memoryStream = new MemoryStream())
             {
-                await stream.CopyToAsync(memoryStream);
+                await stream.CopyToAsync(memoryStream, cancellationToken);
                 memoryStream.Position = 0; // Reset position to read from start
 
                 using (var reader = new StreamReader(memoryStream))
@@ -31,7 +48,7 @@ internal class ImportCNABRequestHandler : IRequestHandler<ImportCNABRequest, Imp
                     string line;
                     var lines = new List<string>();
 
-                    while ((line = await reader.ReadLineAsync()) != null)
+                    while ((line = await reader.ReadLineAsync(cancellationToken)) != null)
                     {
                         if (!string.IsNullOrWhiteSpace(line))
                         {
@@ -43,10 +60,11 @@ internal class ImportCNABRequestHandler : IRequestHandler<ImportCNABRequest, Imp
                     int lineNumber = 0;
                     foreach (var currentLine in lines)
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         lineNumber++;
                         
                         // Parse line
-                        var parseResult = parser.Parse(currentLine);
+                        var parseResult = _parser.Parse(currentLine);
                         if (parseResult.IsFailure)
                         {
                             errors.Add($"Line {lineNumber}: {parseResult.Error}");
@@ -54,7 +72,7 @@ internal class ImportCNABRequestHandler : IRequestHandler<ImportCNABRequest, Imp
                         }
 
                         // Create transaction
-                        var createResult = factory.Create(parseResult.Value!);
+                        var createResult = _transactionFactory.Create(parseResult.Value!);
                         if (createResult.IsFailure)
                         {
                             errors.Add($"Line {lineNumber}: {createResult.Error}");
@@ -65,6 +83,12 @@ internal class ImportCNABRequestHandler : IRequestHandler<ImportCNABRequest, Imp
                     }
                 }
             }
+        }
+
+        // Bulk insert transactions for high performance
+        if (transactions.Any())
+        {
+            await _repository.BulkInsertAsync(transactions, cancellationToken);
         }
 
         return new ImportCNABResponse

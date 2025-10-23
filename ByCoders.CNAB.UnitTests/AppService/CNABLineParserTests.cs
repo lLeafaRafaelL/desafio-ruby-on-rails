@@ -24,15 +24,16 @@ public class CNABLineParserTests
         var result = _sut.Parse(line);
 
         // Assert
-        result.Should().NotBeNull();
-        result.TransactionType.Should().Be(TransactionTypes.Funding);
-        result.Date.Should().Be(new DateOnly(2019, 03, 01));
-        result.Amount.Should().Be(142);
-        result.CPF.Should().Be("09620676017");
-        result.CardNumber.Should().Be("4753****3153");
-        result.Time.Should().Be(new TimeOnly(15, 34, 53));
-        result.StoreOwner.Should().Be("JOÃO MACEDO");
-        result.StoreName.Should().Be("BAR DO JOÃO");
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value.TransactionType.Should().Be(TransactionTypes.Funding);
+        result.Value.Date.Should().Be(new DateOnly(2019, 03, 01));
+        result.Value.Amount.Should().Be(142);
+        result.Value.CPF.Should().Be("09620676017");
+        result.Value.CardNumber.Should().Be("4753****3153");
+        result.Value.Time.Should().Be(new TimeOnly(15, 34, 53));
+        result.Value.StoreOwner.Should().Be("JOÃO MACEDO");
+        result.Value.StoreName.Should().Be("BAR DO JOÃO");
     }
 
     [Fact]
@@ -45,7 +46,8 @@ public class CNABLineParserTests
         var result = _sut.Parse(line);
 
         // Assert
-        result.TransactionType.Should().Be(TransactionTypes.Debit);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.TransactionType.Should().Be(TransactionTypes.Debit);
     }
 
     [Fact]
@@ -58,95 +60,98 @@ public class CNABLineParserTests
         var result = _sut.Parse(line);
 
         // Assert
-        result.TransactionType.Should().Be(TransactionTypes.Sales);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.TransactionType.Should().Be(TransactionTypes.Sales);
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Parse_EmptyOrNullLine_ShouldThrowArgumentException(string line)
+    public void Parse_EmptyOrNullLine_ShouldReturnFailure(string line)
     {
         // Act
-        var act = () => _sut.Parse(line);
+        var result = _sut.Parse(line);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("CNAB line cannot be empty*");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("CNAB line cannot be empty");
     }
 
     [Fact]
-    public void Parse_LineTooShort_ShouldThrowArgumentException()
+    public void Parse_LineTooShort_ShouldReturnFailure()
     {
         // Arrange
-        var line = "123456789"; // Less than 81 characters
+        var line = "123456789"; // Less than 80 characters
 
         // Act
-        var act = () => _sut.Parse(line);
+        var result = _sut.Parse(line);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("CNAB line must be at least 81 characters*");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("CNAB line must be at least 80 characters");
     }
 
     [Theory]
     [InlineData("0")]  // Below range
-    [InlineData("10")] // Above range
     [InlineData("A")]  // Not a number
-    public void Parse_InvalidTransactionType_ShouldThrowArgumentException(string transactionType)
+    public void Parse_InvalidTransactionType_ShouldReturnFailure(string transactionType)
     {
-        // Arrange
-        var line = $"{transactionType}201903010000014200096206760174753****3153153453JOÃO MACEDO   BAR DO JOÃO       ";
+        // Arrange - Using a valid 80-char line and replacing the transaction type
+        var baseLine = "3201903010000014200096206760174753****3153153453JOÃO MACEDO   BAR DO JOÃO       ";
+        var line = transactionType + baseLine.Substring(1);
 
         // Act
-        var act = () => _sut.Parse(line);
+        var result = _sut.Parse(line);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Invalid transaction type*");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Invalid transaction type");
     }
 
     [Fact]
-    public void Parse_InvalidDate_ShouldThrowArgumentException()
+    public void Parse_InvalidDate_ShouldReturnFailure()
     {
         // Arrange
         var line = "3201913990000014200096206760174753****3153153453JOÃO MACEDO   BAR DO JOÃO       ";
         // Date: 20191399 (invalid)
 
         // Act
-        var act = () => _sut.Parse(line);
+        var result = _sut.Parse(line);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().NotBeEmpty();
     }
 
     [Fact]
-    public void Parse_InvalidAmount_ShouldThrowArgumentException()
+    public void Parse_InvalidAmount_ShouldReturnFailure()
     {
         // Arrange
         var line = "320190301ABCDEFGHIJ00096206760174753****3153153453JOÃO MACEDO   BAR DO JOÃO       ";
         // Amount contains letters
 
         // Act
-        var act = () => _sut.Parse(line);
+        var result = _sut.Parse(line);
 
         // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Invalid amount format*");
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Invalid amount format");
     }
 
     [Fact]
-    public void Parse_InvalidTime_ShouldThrowArgumentException()
+    public void Parse_InvalidTime_ShouldReturnFailure()
     {
         // Arrange
         var line = "3201903010000014200096206760174753****999999JOÃO MACEDO   BAR DO JOÃO       ";
         // Time: 999999 (invalid hour)
 
         // Act
-        var act = () => _sut.Parse(line);
+        var result = _sut.Parse(line);
 
         // Assert
-        act.Should().Throw<ArgumentException>();
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -157,7 +162,8 @@ public class CNABLineParserTests
         {
             var line = $"{i}201903010000014200096206760174753****3153153453JOÃO MACEDO   BAR DO JOÃO       ";
             var result = _sut.Parse(line);
-            result.TransactionType.Should().Be((TransactionTypes)i);
+            result.IsSuccess.Should().BeTrue();
+            result.Value.TransactionType.Should().Be((TransactionTypes)i);
         }
     }
 
@@ -171,10 +177,11 @@ public class CNABLineParserTests
         var result = _sut.Parse(line);
 
         // Assert
-        result.StoreOwner.Should().Be("JOÃO MACEDO");
-        result.StoreName.Should().Be("BAR DO JOÃO");
-        result.CPF.Should().NotContain(" ");
-        result.CardNumber.Should().NotContain(" ");
+        result.IsSuccess.Should().BeTrue();
+        result.Value.StoreOwner.Should().Be("JOÃO MACEDO");
+        result.Value.StoreName.Should().Be("BAR DO JOÃO");
+        result.Value.CPF.Should().NotContain(" ");
+        result.Value.CardNumber.Should().NotContain(" ");
     }
 
     [Fact]
@@ -187,7 +194,8 @@ public class CNABLineParserTests
         var result = _sut.Parse(line);
 
         // Assert
-        result.Amount.Should().Be(0);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Amount.Should().Be(0);
     }
 
     [Fact]
@@ -200,6 +208,7 @@ public class CNABLineParserTests
         var result = _sut.Parse(line);
 
         // Assert
-        result.Amount.Should().Be(9999999999);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Amount.Should().Be(99999999.99m); // Amount is divided by 100
     }
 }
