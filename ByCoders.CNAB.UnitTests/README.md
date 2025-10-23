@@ -1,6 +1,6 @@
 # Testes Unitários - ByCoders CNAB
 
-Este projeto contém os testes unitários para a camada **AppService** do sistema de importação CNAB.
+Este projeto contém os testes unitários para as camadas **AppService** e **Domain** do sistema de importação CNAB.
 
 ## 🧪 Tecnologias de Teste
 
@@ -12,29 +12,40 @@ Este projeto contém os testes unitários para a camada **AppService** do sistem
 ## 📁 Estrutura dos Testes
 
 ```
-AppService/
-├── CNABLineParserTests.cs          # Testes do parser de linhas CNAB
-├── TransactionFactoryTests.cs      # Testes da factory de transações
-└── ImportCNABRequestHandlerTests.cs # Testes do handler de importação
+ByCoders.CNAB.UnitTests/
+├── AppService/
+│   ├── CNABLineParserTests.cs          # Parser de linhas CNAB
+│   ├── TransactionFactoryTests.cs      # Factory de transações
+│   ├── ImportCNABRequestHandlerTests.cs # Handler de importação
+│   └── README.md
+├── Domain/
+│   ├── TransactionTests.cs             # Classe base Transaction
+│   ├── TransactionTypesTests.cs        # 9 tipos de transação
+│   ├── TransactionTypeTests.cs         # TransactionType e enums
+│   ├── BusinessScenariosTests.cs       # Cenários de negócio
+│   └── README.md
+└── README.md
 ```
 
 ## 🎯 Cobertura de Testes
 
-### CNABLineParserTests (19 testes)
+### AppService (53 testes)
+
+#### CNABLineParserTests (19 testes)
 ✅ Parsing de linhas válidas  
 ✅ Validação de formato  
 ✅ Todos os tipos de transação (1-9)  
 ✅ Tratamento de erros (linha vazia, curta, tipo inválido, etc.)  
 ✅ Edge cases (valores zero, grandes, espaços, etc.)
 
-### TransactionFactoryTests (20 testes)
+#### TransactionFactoryTests (20 testes)
 ✅ Criação de todas as subclasses (Debit, Sale, Credit, etc.)  
 ✅ Mapeamento correto de propriedades  
 ✅ Validações (CPF, Cartão, Loja, Valor)  
 ✅ Tratamento de dados nulos ou inválidos  
 ✅ Independência entre instâncias
 
-### ImportCNABRequestHandlerTests (14 testes)
+#### ImportCNABRequestHandlerTests (14 testes)
 ✅ Importação de arquivo válido  
 ✅ Processamento paralelo  
 ✅ Arquivo vazio  
@@ -45,7 +56,39 @@ AppService/
 ✅ Cancellation token  
 ✅ Diferentes lojas
 
-**Total: 53 testes unitários**
+### Domain (57 testes)
+
+#### TransactionTests (13 testes)
+✅ Geração automática de ID  
+✅ Timestamp de criação  
+✅ Mapeamento de propriedades  
+✅ Cálculo de TransactionValue  
+✅ Value Objects (Beneficiary, Card, Store)  
+✅ Unicidade de IDs
+
+#### TransactionTypesTests (28 testes)
+✅ Todos os 9 tipos de transação  
+✅ Valores positivos (Cash In)  
+✅ Valores negativos (Cash Out)  
+✅ Mapeamento TransactionTypes → Classes  
+✅ Igualdade de Value Objects  
+✅ Regras de negócio (sinais corretos)
+
+#### TransactionTypeTests (7 testes)
+✅ Classe TransactionType  
+✅ Enum TransactionNature  
+✅ Mapeamento 1-9  
+✅ Igualdade
+
+#### BusinessScenariosTests (9 testes)
+✅ Cálculo de saldo  
+✅ Agrupamento por loja  
+✅ Resumo diário  
+✅ Exemplo real CNAB  
+✅ Filtros e agrupamentos  
+✅ Relatórios mensais
+
+**Total: 110 testes unitários**
 
 ## ▶️ Como Executar
 

@@ -1,1 +1,18 @@
+## Visual Studio
 /.vs
+.vs/
+
+## Build results
+**/bin/
+**/obj/
+bin/
+obj/
+
+## User-specific files
+*.user
+*.userosscache
+*.suo
+
+## Project-specific (legacy - covered by patterns above)
+/ByCoders.CNAB.AppService/obj
+/ByCoders.CNAB.AppService/bin
