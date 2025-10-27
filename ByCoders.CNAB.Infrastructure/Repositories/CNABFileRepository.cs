@@ -1,6 +1,6 @@
 using ByCoders.CNAB.Domain.Files;
 using ByCoders.CNAB.Domain.Files.Models;
-using ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Configurations;
+using ByCoders.CNAB.Infrastructure.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ByCoders.CNAB.Infrastructure.Repositories;

@@ -6,6 +6,7 @@ namespace ByCoders.CNAB.Domain.Transactions.Models;
 /// </summary>
 public class TEDReceipt : Transaction
 {
+    private TEDReceipt() { }
     public TEDReceipt(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
         : base(TransactionTypes.TEDReceipt, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {

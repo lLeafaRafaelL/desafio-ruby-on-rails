@@ -1,4 +1,4 @@
-using ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Configurations;
+using ByCoders.CNAB.Infrastructure.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,14 +31,6 @@ public static class MigrationExtensions
             cnabFileContext.Database.Migrate();
 
             logger.LogInformation("CNABFileDbContext migrations applied successfully");
-
-            // Migration for TransactionDbContext
-            var transactionContext = scopedServices.GetRequiredService<TransactionDbContext>();
-            logger.LogInformation("Applying migrations for TransactionDbContext...");
-
-            transactionContext.Database.Migrate();
-
-            logger.LogInformation("TransactionDbContext migrations applied successfully");
 
             logger.LogInformation("All migrations applied successfully");
         }

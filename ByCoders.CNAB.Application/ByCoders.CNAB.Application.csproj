@@ -19,4 +19,8 @@
     <ProjectReference Include="..\ByCoders.CNAB.Infrastructure\ByCoders.CNAB.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Transactions\FindTransactions\Handler_\" />
+  </ItemGroup>
+
 </Project>

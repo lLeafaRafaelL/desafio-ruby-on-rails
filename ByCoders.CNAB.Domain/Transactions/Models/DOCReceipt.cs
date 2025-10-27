@@ -6,6 +6,8 @@ namespace ByCoders.CNAB.Domain.Transactions.Models;
 /// </summary>
 public class DOCReceipt : Transaction
 {
+    private DOCReceipt() { }
+
     public DOCReceipt(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
         : base(TransactionTypes.DOCReceipt, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {

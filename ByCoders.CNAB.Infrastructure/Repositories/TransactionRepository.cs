@@ -3,14 +3,15 @@ using ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Configurations;
 using Microsoft.EntityFrameworkCore;
 using EFCore.BulkExtensions;
 using ByCoders.CNAB.Domain.Transactions;
+using ByCoders.CNAB.Infrastructure.EntityFrameworkCore;
 
 namespace ByCoders.CNAB.Infrastructure.Repositories;
 
 public class TransactionRepository : ITransactionRepository
 {
-    private readonly TransactionDbContext _context;
+    private readonly CNABFileDbContext _context;
 
-    public TransactionRepository(TransactionDbContext context)
+    public TransactionRepository(CNABFileDbContext context)
     {
         _context = context;
     }

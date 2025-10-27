@@ -26,9 +26,7 @@ public class TransactionBuilder
             .ValueGeneratedNever();
 
         builder
-            .HasOne(x => x.TransactionType)
-            .WithOne()
-            .IsRequired();
+            .HasOne(x => x.TransactionType);
 
         builder
             .Property(x => x.CreatedOn)
@@ -37,6 +35,10 @@ public class TransactionBuilder
         builder
             .Property(x => x.TransactionDateTime)
             .IsRequired();
+
+        builder
+            .HasIndex(x => x.TransactionDateTime)
+            .IsDescending();
 
         builder
             .Ignore(x => x.TransactionDate); 

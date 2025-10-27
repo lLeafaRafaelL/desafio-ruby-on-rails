@@ -6,6 +6,7 @@ namespace ByCoders.CNAB.Domain.Transactions.Models;
 /// </summary>
 public class Funding : Transaction
 {
+    private Funding() { }
     public Funding(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
         : base(TransactionTypes.Funding, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {
