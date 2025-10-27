@@ -81,9 +81,9 @@ public class TransactionRepository : ITransactionRepository
     public async Task<IEnumerable<Transaction>> FindBy(string storeName, DateTimeOffset startDate, DateTimeOffset endDate, CancellationToken cancellationToken)
     {
         return await _context.Transactions
-            .AsSplitQuery() // Optimize performance
             .AsNoTracking() // Optimize performance
-            .Where(t => t.Store.Name.Equals(storeName, StringComparison.InvariantCultureIgnoreCase) && t.TransactionDateTime.Date >= startDate && t.TransactionDateTime <= endDate)
+            .Where(t => t.TransactionDateTime >= startDate.UtcDateTime && t.TransactionDateTime <= endDate.UtcDateTime)
+            .Where(t => t.Store.Name.Contains(storeName))   
             .ToListAsync(cancellationToken);
     }
 }

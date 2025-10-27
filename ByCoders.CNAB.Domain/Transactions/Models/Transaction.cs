@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ByCoders.CNAB.Domain.Transactions.Models;
 
-public abstract class Transaction
+public abstract partial class Transaction
 {
     protected Transaction()
     {

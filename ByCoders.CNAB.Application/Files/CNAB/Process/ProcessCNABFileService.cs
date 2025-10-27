@@ -71,6 +71,10 @@ public class ProcessCNABFileService : IProcessCNABFileService
 
         try
         {
+            // Mark as processing
+            cnabFile.Processing();
+            await _fileRepository.SaveChangesAsync(cancellationToken);
+
             // Check if physical file exists
             if (_fileStorage.FileExists(cnabFile.FilePath) is false)
             {
