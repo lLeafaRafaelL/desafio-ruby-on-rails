@@ -3,6 +3,14 @@ version: '3.8'
 services:
   # API - Upload e consulta de arquivos/transações
   cnab-api:
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
     build:
       context: .
       dockerfile: Dockerfile.API
@@ -23,18 +31,21 @@ services:
       - cnab-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/liveness"]
       interval: 30s
       timeout: 10s
       retries: 3
 
   # Worker - Processamento assíncrono de arquivos
   cnab-worker:
+    ports:
+      - "8081:8081"  # Para health checks e métricas
     build:
       context: .
       dockerfile: Dockerfile.Worker
     container_name: cnab-worker
-    environment:
+    environment: 
+      - ASPNETCORE_URLS=http://+:8081
       - DOTNET_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=cnab_db;Username=cnab_user;Password=cnab_pass123
       - FileStorage__BasePath=/app/storage
@@ -48,6 +59,11 @@ services:
     networks:
       - cnab-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/liveness"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # PostgreSQL Database
   postgres:
