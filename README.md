@@ -88,119 +88,265 @@ Boa sorte!
 
 ---
 
-🏗️ Arquitetura do Projeto
-Este projeto implementa um sistema de processamento de arquivos CNAB (Centro Nacional de Automação Bancária) utilizando Clean Architecture e Domain-Driven Design (DDD).
+# Sistema de Processamento de Arquivos CNAB
 
-Estrutura de Camadas
-┌─────────────────────────────────────────┐
-│         ByCoders.CNAB.API               │  ← Camada de Apresentação
-│         ByCoders.CNAB.Worker            │  ← Background Service
-├─────────────────────────────────────────┤
-│      ByCoders.CNAB.Application          │  ← Camada de Aplicação
-├─────────────────────────────────────────┤
-│        ByCoders.CNAB.Domain             │  ← Camada de Domínio
-├─────────────────────────────────────────┤
-│     ByCoders.CNAB.Infrastructure        │  ← Camada de Infraestrutura
-├─────────────────────────────────────────┤
-│         ByCoders.CNAB.Core              │  ← Camada Base
-└─────────────────────────────────────────┘
-Componentes
-API (REST): Endpoints para upload de arquivos e consulta de transações
-Worker: Serviço em background que processa arquivos CNAB de forma assíncrona
-PostgreSQL: Banco de dados relacional para persistência
-Docker Compose: Orquestração de containers
-🚀 Como Funciona
-1. Upload de Arquivo CNAB
-Cliente → POST /api/files → API → Salva arquivo → Retorna 202 Accepted
-                                        ↓
-                                   Arquivo pendente
-                                        ↓
-                              Worker (background)
-                                        ↓
-                    ┌──────────────────────────────┐
-                    │ 1. Lê arquivo linha por linha│
-                    │ 2. Parser (80 caracteres)    │
-                    │ 3. Valida dados              │
-                    │ 4. Cria transações           │
-                    │ 5. Bulk insert no DB         │
-                    └──────────────────────────────┘
+Sistema desenvolvido em .NET 9.0 para processamento de arquivos CNAB (Centro Nacional de Automação Bancária) com arquitetura baseada em Clean Architecture e Domain-Driven Design.
 
-2. Consulta de Transações
-Cliente → GET /api/transactions/store/{storeName}?fromDate=...&toDate=...
-            ↓
-       API consulta DB
-            ↓
-       Retorna JSON com:
-       - Lista de transações
-       - Saldo acumulado (entradas - saídas)
-       - Total de transações
-🔧 Como Configurar e Executar
-Pré-requisitos
-Docker & Docker Compose
-.NET 9.0 SDK (apenas para desenvolvimento local)
-Opção 1: Usando Docker Compose (Recomendado)
-# 1. Clone o repositório
+---
+
+## Índice
+
+- [Visão Geral](#visão-geral)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Arquitetura](#arquitetura)
+- [Como Funciona](#como-funciona)
+- [Pré-requisitos](#pré-requisitos)
+- [Instalação e Execução](#instalação-e-execução)
+- [Endpoints da API](#endpoints-da-api)
+- [Como Testar](#como-testar)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Banco de Dados](#banco-de-dados)
+- [Monitoramento](#monitoramento)
+- [Desenvolvimento](#desenvolvimento)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Visão Geral
+
+Este sistema processa arquivos CNAB contendo transações financeiras de múltiplas lojas, armazenando os dados em um banco PostgreSQL e disponibilizando APIs REST para consulta.
+
+### Principais Características
+
+- Upload de arquivos CNAB via API REST
+- Processamento assíncrono em background worker
+- Parser de arquivos com posições fixas (80 caracteres por linha)
+- Cálculo automático de saldo (entradas - saídas)
+- API REST para consulta de transações por loja e período
+- Health checks e métricas Prometheus
+- Logs estruturados com Serilog
+- Containerização com Docker Compose
+
+---
+
+## Tecnologias Utilizadas
+
+### Backend
+- **.NET 9.0** - Framework principal
+- **ASP.NET Core** - API REST
+- **Entity Framework Core** - ORM
+- **PostgreSQL** - Banco de dados relacional
+
+### Qualidade e Testes
+- **xUnit** - Framework de testes
+- **FluentAssertions** - Assertions fluentes
+- **NSubstitute** - Mocks e stubs
+
+### Infraestrutura
+- **Docker** - Containerização
+- **Docker Compose** - Orquestração de containers
+- **Serilog** - Logging estruturado
+- **Prometheus** - Métricas
+- **Swagger/OpenAPI** - Documentação da API
+
+---
+
+## Arquitetura
+
+### Estrutura de Camadas
+
+O projeto segue os princípios de Clean Architecture com separação clara de responsabilidades:
+
+┌─────────────────────────────────────────┐ │ ByCoders.CNAB.API (REST API) │ │ ByCoders.CNAB.Worker (Background) │ ├─────────────────────────────────────────┤ │ ByCoders.CNAB.Application (Use Cases) │ ├─────────────────────────────────────────┤ │ ByCoders.CNAB.Domain (Entities) │ ├─────────────────────────────────────────┤ │ ByCoders.CNAB.Infrastructure (Data) │ ├─────────────────────────────────────────┤ │ ByCoders.CNAB.Core (Shared) │ └─────────────────────────────────────────┘
+
+
+### Componentes
+
+**ByCoders.CNAB.API**
+- Controllers REST
+- Middlewares (Correlation, Exception Filter)
+- Health checks e métricas
+
+**ByCoders.CNAB.Worker**
+- Background service para processamento assíncrono
+- Polling de arquivos pendentes a cada 30 segundos
+
+**ByCoders.CNAB.Application**
+- Handlers (Upload, Consulta de transações)
+- Validators (FluentValidation)
+- Parsers (CNAB line parser)
+- Factories (Transaction factory)
+
+**ByCoders.CNAB.Domain**
+- Entidades (Transaction, CNABFile)
+- Value Objects (Beneficiary, Card, Store)
+- Tipos de transação (9 tipos)
+- Interfaces de repositório
+
+**ByCoders.CNAB.Infrastructure**
+- Entity Framework DbContext
+- Repositórios concretos
+- Migrations
+- File Storage Service
+
+**ByCoders.CNAB.Core**
+- Padrões base (Result, Handler)
+- Validators abstratos
+- Extensões HTTP
+
+---
+
+## Como Funciona
+
+### Fluxo de Processamento
+
+Cliente envia arquivo CNAB │ ▼
+API recebe e salva arquivo localmente │ ▼
+API retorna 202 Accepted (FileId + Status) │ ▼
+Worker detecta arquivo pendente (polling 30s) │ ▼
+Worker processa linha por linha │ ├─ Parser extrai dados (80 chars posições fixas) ├─ Validator valida formato ├─ Factory cria entidades Transaction └─ Repository faz bulk insert │ ▼
+Arquivo marcado como "Processed" │ ▼
+Cliente consulta transações via API
+
+### Formato do Arquivo CNAB
+
+Cada linha do arquivo possui exatamente 80 caracteres com posições fixas:
+
+| Campo          | Início | Fim | Tamanho | Exemplo         | Descrição                    |
+|----------------|--------|-----|---------|-----------------|------------------------------|
+| Tipo           | 1      | 1   | 1       | 3               | Tipo da transação (1-9)      |
+| Data           | 2      | 9   | 8       | 20190301        | Formato YYYYMMDD             |
+| Valor          | 10     | 19  | 10      | 0000014200      | Valor em centavos (142.00)   |
+| CPF            | 20     | 30  | 11      | 09620676017     | CPF do beneficiário          |
+| Cartão         | 31     | 42  | 12      | 4753****3153    | Número do cartão             |
+| Hora           | 43     | 48  | 6       | 153453          | Formato HHMMSS (UTC-3)       |
+| Dono da Loja   | 49     | 62  | 14      | JOÃO MACEDO     | Nome do representante        |
+| Nome da Loja   | 63     | 80  | 18      | BAR DO JOÃO     | Nome da loja                 |
+
+**Exemplo de linha completa:**
+3201903010000014200096206760174753****3153153453JOÃO MACEDO BAR DO JOÃO
+
+
+### Tipos de Transação
+
+| Tipo | Descrição              | Natureza | Sinal | Impacto no Saldo |
+|------|------------------------|----------|-------|------------------|
+| 1    | Débito                 | Entrada  | +     | Aumenta          |
+| 2    | Boleto                 | Saída    | -     | Diminui          |
+| 3    | Financiamento          | Saída    | -     | Diminui          |
+| 4    | Crédito                | Entrada  | +     | Aumenta          |
+| 5    | Recebimento Empréstimo | Entrada  | +     | Aumenta          |
+| 6    | Vendas                 | Entrada  | +     | Aumenta          |
+| 7    | Recebimento TED        | Entrada  | +     | Aumenta          |
+| 8    | Recebimento DOC        | Entrada  | +     | Aumenta          |
+| 9    | Aluguel                | Saída    | -     | Diminui          |
+
+---
+
+## Pré-requisitos
+
+- **Docker** versão 20.10 ou superior
+- **Docker Compose** versão 1.29 ou superior
+
+Para desenvolvimento local (opcional):
+- **.NET 9.0 SDK**
+- **PostgreSQL 16**
+
+---
+
+## Instalação e Execução
+
+### Método 1: Docker Compose (Recomendado)
+
+```bash
+# 1. Clonar o repositório
 git clone <repository-url>
 cd desafio-ruby-on-rails
 
-# 2. Build das imagens
+# 2. Build das imagens Docker
 docker-compose build
 
-# 3. Iniciar os serviços
+# 3. Iniciar todos os serviços
 docker-compose up -d
 
-# 4. Verificar status
+# 4. Verificar status dos containers
 docker-compose ps
 
 # 5. Acompanhar logs
 docker-compose logs -f
-Opção 2: Usando Script de Automação
-# Build
+Método 2: Script de Automação
+# Dar permissão de execução (se necessário)
+chmod +x run.sh
+
+# Build das imagens
 ./run.sh docker-build
 
-# Start
+# Iniciar serviços
 ./run.sh docker-up
 
-# Logs
+# Ver logs
 ./run.sh docker-logs
 
-# Stop
+# Parar serviços
 ./run.sh docker-down
-Endpoints Disponíveis
-Após iniciar os containers:
+Comandos Disponíveis no Script
+./run.sh help              # Exibe ajuda
+./run.sh docker-build      # Build das imagens
+./run.sh docker-up         # Inicia containers
+./run.sh docker-down       # Para containers
+./run.sh docker-logs       # Exibe logs
+./run.sh test              # Executa testes
+./run.sh build             # Build da solution
+./run.sh clean             # Limpa artifacts
+Serviços Disponíveis
+Após iniciar os containers, os seguintes endpoints estarão disponíveis:
 
-API REST: http://localhost:5000
-Swagger UI: http://localhost:5000/swagger
-Health Check (Liveness): http://localhost:5000/health/liveness
-Health Check (Readiness): http://localhost:5000/health/readiness
-Métricas Prometheus: http://localhost:5000/metrics
-PostgreSQL: localhost:5432
-🧪 Como Testar
+| Serviço | URL | Descrição | |----------------------|----------------------------------------|----------------------------------| | API REST | http://localhost:5000 | API principal | | Swagger UI | http://localhost:5000/swagger | Documentação interativa | | Health (Liveness) | http://localhost:5000/health/liveness | Status do serviço | | Health (Readiness) | http://localhost:5000/health/readiness | Prontidão para requisições | | Prometheus Metrics | http://localhost:5000/metrics | Métricas da aplicação | | PostgreSQL | localhost:5432 | Banco de dados |
+
+Credenciais do PostgreSQL:
+
+Database: cnab_db
+Username: cnab_user
+Password: cnab_pass123
+Endpoints da API
 1. Upload de Arquivo CNAB
-Via cURL
-curl -X POST "http://localhost:5000/api/files" \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@CNAB.txt"
-Resposta Esperada (202 Accepted)
+Endpoint: POST /api/files
+
+Content-Type: multipart/form-data
+
+Parâmetros:
+
+file (form-data): Arquivo CNAB (.txt)
+Resposta de Sucesso (202 Accepted):
+
 {
   "fileId": "01938e6f-7890-7abc-b123-456789abcdef",
   "fileName": "CNAB.txt",
   "status": 1
 }
-Status:
+Status do Arquivo:
 
 0 = Pending (aguardando processamento)
 1 = Processing (sendo processado)
-2 = Processed (concluído)
-3 = Failed (falha)
-2. Aguardar Processamento
-O Worker processa arquivos a cada 30 segundos. Acompanhe os logs:
+2 = Processed (concluído com sucesso)
+3 = Failed (falha no processamento)
+Exemplo com cURL:
 
-docker-compose logs -f cnab-worker
-3. Consultar Transações por Loja
-Via cURL
-curl -X GET "http://localhost:5000/api/transactions/store/BAR%20DO%20JO%C3%83O?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z"
-Resposta Esperada (200 OK)
+curl -X POST "http://localhost:5000/api/files" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@CNAB.txt"
+2. Consultar Transações por Loja
+Endpoint: GET /api/transactions/store/{storeName}
+
+Parâmetros de Query:
+
+fromDate (DateTimeOffset, obrigatório): Data inicial no formato ISO 8601
+toDate (DateTimeOffset, obrigatório): Data final no formato ISO 8601
+Parâmetros de Path:
+
+storeName (string, obrigatório): Nome exato da loja (case sensitive)
+Resposta de Sucesso (200 OK):
+
 {
   "startDate": "2019-03-01T00:00:00+00:00",
   "endDate": "2019-03-31T23:59:59+00:00",
@@ -210,6 +356,7 @@ Resposta Esperada (200 OK)
     {
       "id": "01938e6f-1111-7abc-b123-456789abcdef",
       "createdOn": "2025-10-27T10:30:00+00:00",
+      "cnabFileId": "01938e6f-7890-7abc-b123-456789abcdef",
       "transactionType": {
         "id": 3,
         "description": "Funding",
@@ -231,116 +378,455 @@ Resposta Esperada (200 OK)
     }
   ]
 }
-4. Usando Postman
-Importe a collection CNAB-API.postman_collection.json (veja seção abaixo) para testar todos os endpoints com exemplos prontos.
+Resposta sem Dados (204 No Content): Retornado quando não há transações para a loja no período especificado.
 
-📊 Monitoramento
-Health Checks
-# Liveness (serviço está rodando?)
+Exemplo com cURL:
+
+curl -X GET "http://localhost:5000/api/transactions/store/BAR%20DO%20JO%C3%83O?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z"
+Lojas disponíveis no arquivo de exemplo:
+
+BAR DO JOÃO
+LOJA DO Ó - MATRIZ
+LOJA DO Ó - FILIAL
+MERCADO DA AVENIDA
+MERCEARIA 3 IRMÃOS
+Como Testar
+Teste Completo Passo a Passo
+1. Verificar se a API está rodando
+
 curl http://localhost:5000/health/liveness
+Resposta esperada:
 
-# Readiness (serviço está pronto para receber requisições?)
-curl http://localhost:5000/health/readiness
-Métricas Prometheus
-curl http://localhost:5000/metrics
-Logs Estruturados (Serilog)
-# Ver logs da API
-docker-compose logs cnab-api
+{
+  "status": "Healthy"
+}
+2. Fazer upload do arquivo CNAB
 
-# Ver logs do Worker
-docker-compose logs cnab-worker
+curl -X POST "http://localhost:5000/api/files" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@CNAB.txt"
+Resposta esperada (202 Accepted):
 
-# Ver logs do PostgreSQL
-docker-compose logs postgres
-🗄️ Acesso ao Banco de Dados
-# Conectar via psql
-docker exec -it cnab-postgres psql -U cnab_user -d cnab_db
+{
+  "fileId": "01938e6f-7890-7abc-b123-456789abcdef",
+  "fileName": "CNAB.txt",
+  "status": 1
+}
+3. Aguardar processamento (aproximadamente 30 segundos)
 
-# Comandos úteis
-\dt                          # Listar tabelas
-SELECT * FROM cnabfiles;     # Ver arquivos
-SELECT * FROM transactions;  # Ver transações
-SELECT * FROM transactiontypes; # Ver tipos
-🛠️ Desenvolvimento Local
-Executar Testes Unitários
-# Via script
-./run.sh test
+Acompanhar logs do worker:
 
-# Ou diretamente
-dotnet test
-
-# Com cobertura
-dotnet test /p:CollectCoverage=true
-Restaurar Dependências
-./run.sh restore
-# ou
-dotnet restore
-Build da Solution
-./run.sh build
-# ou
-dotnet build
-Limpar Artifacts
-./run.sh clean
-🐛 Troubleshooting
-Container não inicia
-# Verificar logs
-docker-compose logs
-
-# Rebuild forçado
-docker-compose down -v
-docker-compose build --no-cache
-docker-compose up -d
-Banco de dados não conecta
-# Verificar se o PostgreSQL está saudável
-docker-compose ps
-
-# Testar conexão manual
-docker exec -it cnab-postgres pg_isready -U cnab_user
-Worker não processa arquivos
-# Verificar se há arquivos pendentes no banco
-docker exec -it cnab-postgres psql -U cnab_user -d cnab_db -c "SELECT * FROM cnabfiles WHERE processedon IS NULL;"
-
-# Verificar logs do worker
 docker-compose logs -f cnab-worker
-📦 Estrutura de Diretórios
-desafio-ruby-on-rails/
-├── ByCoders.CNAB.API/           # REST API
-├── ByCoders.CNAB.Worker/        # Background Service
-├── ByCoders.CNAB.Application/   # Casos de Uso
-├── ByCoders.CNAB.Domain/        # Entidades e Regras de Negócio
-├── ByCoders.CNAB.Infrastructure/# Repositórios e DbContext
-├── ByCoders.CNAB.Core/          # Padrões Base
-├── ByCoders.CNAB.UnitTests/     # Testes Unitários
-├── docker-compose.yml           # Orquestração
-├── Dockerfile.API               # Build da API
-├── Dockerfile.Worker            # Build do Worker
-├── run.sh                       # Script de automação
-└── CNAB.txt                     # Arquivo de exemplo
-📮 Postman Collection
+Você verá mensagens indicando o processamento:
 
-Utilize o arquivo chamado postman_collection.json:
+[10:30:00 INF] Processing CNAB file: CNAB.txt
+[10:30:01 INF] Parsed 21 transactions
+[10:30:01 INF] File processed successfully
+4. Consultar transações processadas
 
-📝 Como Usar a Collection do Postman
-1. Importar a Collection
-Abra o Postman
-Clique em Import
-Selecione o arquivo CNAB-API.postman_collection.json
-A collection será importada com todos os endpoints
-2. Configurar Environment (Opcional)
-A collection já vem com a variável baseUrl configurada como http://localhost:5000. Se precisar alterar:
+curl -X GET "http://localhost:5000/api/transactions/store/BAR%20DO%20JO%C3%83O?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z"
+5. Testar outras lojas
 
-Clique no ícone de "olho" no canto superior direito
-Edite a variável baseUrl
-3. Ordem de Testes Recomendada
-Health Checks → Verificar se a API está rodando
-Upload CNAB File → Fazer upload do arquivo CNAB.txt
-Aguardar ~30 segundos → Worker processa o arquivo
-Get Transactions by Store → Consultar transações processadas
-4. Testes Automatizados
-Cada requisição tem scripts de teste que verificam:
+# MERCADO DA AVENIDA
+curl -X GET "http://localhost:5000/api/transactions/store/MERCADO%20DA%20AVENIDA?fromDate=2019-01-01T00:00:00Z&toDate=2019-12-31T23:59:59Z"
+
+# LOJA DO Ó - MATRIZ
+curl -X GET "http://localhost:5000/api/transactions/store/LOJA%20DO%20%C3%93%20-%20MATRIZ?fromDate=2019-01-01T00:00:00Z&toDate=2019-12-31T23:59:59Z"
+Usando Postman
+Importar Collection:
+
+Importe o arquivo CNAB-API.postman_collection.json no Postman
+A collection já vem com variáveis configuradas (baseUrl = http://localhost:5000)
+Execute as requisições na ordem:
+Health Checks
+Upload CNAB File
+Get Transactions by Store
+Testes Automatizados:
+
+Cada requisição possui scripts de teste que validam:
 
 Status code correto
 Estrutura da resposta
 Tipos de dados
 Regras de negócio
-Execute a collection completa clicando em Run para ver todos os testes passarem.
+Execute a collection completa usando o Runner do Postman.
+
+Usando Swagger UI
+Acesse: http://localhost:5000/swagger
+Navegue até POST /api/files
+Clique em "Try it out"
+Faça upload do arquivo CNAB.txt
+Aguarde processamento
+Teste o endpoint GET /api/transactions/store/{storeName}
+Estrutura do Projeto
+desafio-ruby-on-rails/
+│
+├── ByCoders.CNAB.API/                  # REST API
+│   ├── Controllers/                    # Controllers REST
+│   ├── Middlewares/                    # Middlewares customizados
+│   ├── Filters/                        # Exception filters
+│   └── Program.cs                      # Configuração da aplicação
+│
+├── ByCoders.CNAB.Worker/               # Background Worker
+│   ├── Files/                          # Processador de arquivos
+│   ├── Configurations/                 # Configurações
+│   └── Program.cs                      # Host configuration
+│
+├── ByCoders.CNAB.Application/          # Casos de Uso
+│   ├── Files/CNAB/                     # Upload e processamento
+│   │   ├── Upload/                     # Handler de upload
+│   │   └── Process/                    # Parser e processamento
+│   ├── Transactions/                   # Consulta de transações
+│   │   ├── FindTransactions/           # Handler de consulta
+│   │   └── Factories/                  # Transaction factory
+│   └── DI/                             # Dependency Injection
+│
+├── ByCoders.CNAB.Domain/               # Entidades de Domínio
+│   ├── Files/Models/                   # CNABFile aggregate
+│   ├── Transactions/Models/            # Transaction aggregate
+│   │   ├── Transaction.cs              # Classe base abstrata
+│   │   ├── Debit.cs, Credit.cs, etc.   # Tipos concretos
+│   │   └── TransactionType.cs          # Value object
+│   └── Transactions/                   # Interfaces de repositório
+│
+├── ByCoders.CNAB.Infrastructure/       # Infraestrutura
+│   ├── EntityFrameworkCore/            # EF Core configuration
+│   │   ├── CNABFileDbContext.cs        # DbContext
+│   │   └── Builders/                   # Entity builders
+│   ├── Repositories/                   # Implementação de repositórios
+│   ├── Migrations/                     # Database migrations
+│   └── DI/                             # Dependency Injection
+│
+├── ByCoders.CNAB.Core/                 # Camada Base
+│   ├── Handlers/                       # Handler pattern
+│   ├── Results/                        # Result pattern
+│   ├── Validators/                     # Validators base
+│   ├── Http/                           # HTTP extensions
+│   └── Prometheus/                     # Prometheus integration
+│
+├── ByCoders.CNAB.UnitTests/            # Testes Unitários
+│   ├── Application/                    # Testes de application
+│   ├── Domain/                         # Testes de domínio
+│   └── Infrastructure/                 # Testes de infraestrutura
+│
+├── docker-compose.yml                  # Orquestração Docker
+├── Dockerfile.API                      # Build da API
+├── Dockerfile.Worker                   # Build do Worker
+├── run.sh                              # Script de automação
+├── CNAB.txt                            # Arquivo de exemplo
+└── README.md                           # Este arquivo
+Banco de Dados
+Schema
+O banco de dados possui 3 tabelas principais:
+
+cnabfiles
+
+CREATE TABLE cnabfiles (
+    id UUID PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    filepath VARCHAR(500) NOT NULL UNIQUE,
+    filesize BIGINT NOT NULL,
+    uploadedon TIMESTAMP NOT NULL,
+    processingstartedon TIMESTAMP,
+    processedon TIMESTAMP,
+    failedon TIMESTAMP,
+    errormessage VARCHAR(2000),
+    transactioncount INTEGER NOT NULL DEFAULT 0
+);
+
+-- Índices
+CREATE INDEX idx_cnabfiles_uploadedon ON cnabfiles(uploadedon);
+CREATE INDEX idx_cnabfiles_processedon ON cnabfiles(processedon);
+CREATE INDEX idx_cnabfiles_failedon ON cnabfiles(failedon);
+transactiontypes (dados pré-carregados)
+
+CREATE TABLE transactiontypes (
+    id INTEGER PRIMARY KEY,
+    description VARCHAR(30) NOT NULL,
+    nature SMALLINT NOT NULL  -- 1=Entrada, 2=Saída
+);
+
+-- Dados iniciais
+INSERT INTO transactiontypes VALUES
+(1, 'Debit', 1),
+(2, 'Bank Slip', 2),
+(3, 'Funding', 2),
+(4, 'Credit', 1),
+(5, 'Loan Receipt', 1),
+(6, 'Sales', 1),
+(7, 'TED Receipt', 1),
+(8, 'DOC Receipt', 1),
+(9, 'Rent', 2);
+transactions
+
+CREATE TABLE transactions (
+    id UUID PRIMARY KEY,
+    createdon TIMESTAMPTZ NOT NULL,
+    cnabfileid UUID,
+    transactiontypeid INTEGER NOT NULL,
+    transactiondatetime TIMESTAMPTZ NOT NULL,
+    amountcnab NUMERIC NOT NULL,
+    beneficiary_document VARCHAR(11) NOT NULL,
+    card_number VARCHAR(12) NOT NULL,
+    store_name VARCHAR(19) NOT NULL,
+    store_owner VARCHAR(14) NOT NULL,
+    FOREIGN KEY (transactiontypeid) REFERENCES transactiontypes(id)
+);
+
+-- Índices
+CREATE INDEX idx_transactions_cnabfileid ON transactions(cnabfileid);
+CREATE INDEX idx_transactions_store_name ON transactions(store_name);
+CREATE INDEX idx_transactions_datetime ON transactions(transactiondatetime DESC);
+Conectar ao Banco
+Via Docker:
+
+docker exec -it cnab-postgres psql -U cnab_user -d cnab_db
+Via Client Externo:
+
+Host: localhost
+Port: 5432
+Database: cnab_db
+Username: cnab_user
+Password: cnab_pass123
+Consultas Úteis:
+
+-- Ver todos os arquivos processados
+SELECT * FROM cnabfiles ORDER BY uploadedon DESC;
+
+-- Ver transações de uma loja
+SELECT * FROM transactions WHERE store_name = 'BAR DO JOÃO';
+
+-- Saldo por loja
+SELECT 
+    store_name,
+    COUNT(*) as total_transactions,
+    SUM(amountcnab / 100.0) as accumulated_value
+FROM transactions
+GROUP BY store_name;
+
+-- Ver tipos de transação
+SELECT * FROM transactiontypes;
+Monitoramento
+Health Checks
+Liveness Probe - Verifica se a aplicação está rodando
+
+curl http://localhost:5000/health/liveness
+Readiness Probe - Verifica se está pronta para receber requisições
+
+curl http://localhost:5000/health/readiness
+Ambos retornam:
+
+{
+  "status": "Healthy",
+  "totalDuration": "00:00:00.0123456"
+}
+Métricas Prometheus
+Endpoint de métricas:
+
+curl http://localhost:5000/metrics
+Métricas disponíveis:
+
+Requisições HTTP (contadores e histogramas)
+Latência de endpoints
+Status codes
+Métricas de runtime .NET
+Logs Estruturados
+Ver logs em tempo real:
+
+# API
+docker-compose logs -f cnab-api
+
+# Worker
+docker-compose logs -f cnab-worker
+
+# PostgreSQL
+docker-compose logs -f postgres
+
+# Todos os serviços
+docker-compose logs -f
+Formato dos logs (Serilog):
+
+[10:30:00 INF] SourceContext: Message
+[10:30:01 WRN] SourceContext: Warning message
+[10:30:02 ERR] SourceContext: Error message
+Exception details...
+Status dos Containers
+# Ver status
+docker-compose ps
+
+# Ver recursos utilizados
+docker stats
+
+# Inspecionar container
+docker inspect cnab-api
+Desenvolvimento
+Executar Testes Unitários
+# Todos os testes
+dotnet test
+
+# Com saída detalhada
+dotnet test --verbosity detailed
+
+# Testes de um projeto específico
+dotnet test ByCoders.CNAB.UnitTests/
+
+# Com cobertura de código
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+Build Local
+# Restaurar dependências
+dotnet restore
+
+# Build completo
+dotnet build
+
+# Build em modo Release
+dotnet build -c Release
+
+# Publicar
+dotnet publish -c Release -o ./publish
+Executar Localmente (sem Docker)
+Requisitos:
+
+.NET 9.0 SDK
+PostgreSQL 16 rodando na porta 5432
+1. Atualizar connection string em appsettings.json
+
+2. Executar migrations:
+
+cd ByCoders.CNAB.Infrastructure
+dotnet ef database update --context CNABFileDbContext
+3. Iniciar API:
+
+cd ByCoders.CNAB.API
+dotnet run
+4. Iniciar Worker (em outro terminal):
+
+cd ByCoders.CNAB.Worker
+dotnet run
+Adicionar Nova Migration
+cd ByCoders.CNAB.Infrastructure
+dotnet ef migrations add NomeDaMigration --context CNABFileDbContext
+dotnet ef database update
+Troubleshooting
+Problema: Containers não iniciam
+Solução:
+
+# Ver logs detalhados
+docker-compose logs
+
+# Rebuild completo
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up -d
+Problema: API retorna 503 (Service Unavailable)
+Causa: PostgreSQL não está pronto
+
+Solução:
+
+# Verificar saúde do PostgreSQL
+docker-compose ps
+
+# Esperar até health status = healthy
+docker exec -it cnab-postgres pg_isready -U cnab_user
+Problema: Worker não processa arquivos
+Diagnóstico:
+
+# 1. Verificar logs do worker
+docker-compose logs cnab-worker
+
+# 2. Verificar arquivos pendentes no banco
+docker exec -it cnab-postgres psql -U cnab_user -d cnab_db \
+  -c "SELECT * FROM cnabfiles WHERE processedon IS NULL;"
+
+# 3. Verificar se worker está rodando
+docker-compose ps cnab-worker
+Possíveis causas:
+
+Worker não tem acesso ao diretório de storage
+Permissões incorretas no volume
+Banco de dados inacessível
+Problema: Erro 400 ao fazer upload
+Causa comum: Arquivo vazio ou formato inválido
+
+Verificar:
+
+Arquivo tem extensão .txt
+Arquivo não está vazio
+Cada linha tem exatamente 80 caracteres
+Formato segue especificação CNAB
+Problema: Transações não aparecem na consulta
+Checklist:
+
+# 1. Arquivo foi processado?
+docker exec -it cnab-postgres psql -U cnab_user -d cnab_db \
+  -c "SELECT filename, processedon FROM cnabfiles;"
+
+# 2. Transações foram inseridas?
+docker exec -it cnab-postgres psql -U cnab_user -d cnab_db \
+  -c "SELECT COUNT(*) FROM transactions;"
+
+# 3. Nome da loja está correto? (case sensitive)
+docker exec -it cnab-postgres psql -U cnab_user -d cnab_db \
+  -c "SELECT DISTINCT store_name FROM transactions;"
+
+# 4. Período de datas está correto?
+# Verifique se as datas no arquivo estão no intervalo consultado
+Problema: Banco de dados não aceita conexão
+Solução:
+
+# Reiniciar apenas o PostgreSQL
+docker-compose restart postgres
+
+# Verificar logs
+docker-compose logs postgres
+
+# Testar conexão
+docker exec -it cnab-postgres psql -U cnab_user -d cnab_db -c "SELECT 1;"
+Limpar Tudo e Recomeçar
+# Parar e remover containers, volumes e networks
+docker-compose down -v
+
+# Remover imagens
+docker-compose down --rmi all
+
+# Rebuild e reiniciar
+docker-compose build --no-cache
+docker-compose up -d
+Documentação Adicional
+Swagger/OpenAPI
+Acesse a documentação interativa da API em: http://localhost:5000/swagger
+
+A documentação inclui:
+
+Todos os endpoints disponíveis
+Schemas de request/response
+Exemplos de uso
+Possibilidade de testar diretamente no navegador
+Postman Collection
+Importe o arquivo CNAB-API.postman_collection.json para ter acesso a:
+
+Requisições pré-configuradas
+Testes automatizados
+Variáveis de ambiente
+Exemplos de uso
+Arquitetura de Decisão
+Por que Clean Architecture?
+Separação de responsabilidades: Cada camada tem uma responsabilidade clara
+Testabilidade: Domain e Application são independentes de framework
+Manutenibilidade: Mudanças em uma camada não afetam outras
+Flexibilidade: Fácil trocar banco de dados ou framework
+Por que Processamento Assíncrono?
+Performance: API responde imediatamente sem bloquear
+Escalabilidade: Worker pode processar múltiplos arquivos em paralelo
+Resiliência: Falhas no processamento não afetam a API
+Monitoramento: Status do processamento pode ser consultado
+Por que Result Pattern?
+Evita exceptions: Usa Result<T> para fluxo de negócio
+Código mais limpo: Fica explícito quando operação pode falhar
+Performance: Exceptions são caras em termos de performance
+Rastreabilidade: Failure details fornecem contexto rico
+Licença
+Este projeto foi desenvolvido como desafio técnico.
+
+Contato
+Para dúvidas ou sugestões sobre este projeto, entre em contato através do repositório.
