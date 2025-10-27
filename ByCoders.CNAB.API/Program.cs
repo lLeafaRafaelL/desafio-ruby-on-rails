@@ -30,7 +30,12 @@ var storagePath = builder.Configuration["FileStorage:BasePath"] ?? "/app/storage
 builder.Services.AddControllers(config =>
 { 
     config.Filters.Add<ExceptionFilter>();
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -41,12 +46,27 @@ builder.Services.AddSwaggerGen(options =>
         Description = "API for CNAB file upload and transaction queries"
     });
 
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath))
+    // Incluir comentários XML de TODOS os projetos que geram documentação
+    var xmlFiles = new[]
     {
-        options.IncludeXmlComments(xmlPath);
+        "ByCoders.CNAB.API.xml",
+        "ByCoders.CNAB.Application.xml",
+        "ByCoders.CNAB.Core.xml",
+        "ByCoders.CNAB.Domain.xml",
+        "ByCoders.CNAB.Infrastructure.xml"
+    };
+
+    foreach (var xmlFile in xmlFiles)
+    {
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        if (File.Exists(xmlPath))
+        {
+            options.IncludeXmlComments(xmlPath);
+        }
     }
+
+    // Exibir enums como strings no Swagger
+    options.SchemaFilter<EnumSchemaFilter>();
 });
 
 builder.Services

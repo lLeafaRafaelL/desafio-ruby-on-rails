@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
 
-
-
 IConfiguration configuration = new ConfigurationBuilder()
-   .AddJsonFile("appsettings.Base.json", optional: true, reloadOnChange: false)
+   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+   .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production"}.json", optional: true, reloadOnChange: false)
    .AddEnvironmentVariables()
    .AddCommandLine(args)
    .Build();
+
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureWebHostDefaults(webBuilder =>
@@ -48,19 +48,19 @@ builder.ConfigureServices((hostContext, services) =>
         options.ServicesStopConcurrently = true;
     });
 
-    var connectionString = configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+    var connectionString = hostContext.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
 
     services
         .AddOptions<FileStorageConfiguration>()
-        .Bind(configuration.GetSection("FileStorage"))
+        .Bind(hostContext.Configuration.GetSection("FileStorage"))
         .ValidateDataAnnotations()
         .ValidateOnStart();
     
     // Configure CNAB File Processor settings
     services
         .AddOptions<CNABFileProcessorConfiguration>()
-        .Bind(configuration.GetSection("CNABFileProcessor"))
+        .Bind(hostContext.Configuration.GetSection("CNABFileProcessor"))
         .ValidateDataAnnotations()
         .ValidateOnStart();
 
