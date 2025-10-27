@@ -26,9 +26,6 @@ public class TransactionBuilder
             .ValueGeneratedNever();
 
         builder
-            .HasOne(x => x.TransactionType);
-
-        builder
             .Property(x => x.CreatedOn)
             .IsRequired();
 

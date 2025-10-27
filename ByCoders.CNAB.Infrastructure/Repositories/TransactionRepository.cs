@@ -54,7 +54,6 @@ public class TransactionRepository : ITransactionRepository
     public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
         return await _context.Transactions
-            .Include(t => t.TransactionType)
             .Where(t => t.TransactionDate >= startDate && t.TransactionDate <= endDate)
             .OrderByDescending(t => t.TransactionDate)
             .ThenByDescending(t => t.TransactionTime)
@@ -82,7 +81,6 @@ public class TransactionRepository : ITransactionRepository
     public async Task<IEnumerable<Transaction>> FindBy(string storeName, DateTimeOffset startDate, DateTimeOffset endDate, CancellationToken cancellationToken)
     {
         return await _context.Transactions
-            .Include(t => t.TransactionType)
             .AsSplitQuery() // Optimize performance
             .AsNoTracking() // Optimize performance
             .Where(t => t.Store.Name.Equals(storeName, StringComparison.InvariantCultureIgnoreCase) && t.TransactionDateTime.Date >= startDate && t.TransactionDateTime <= endDate)
