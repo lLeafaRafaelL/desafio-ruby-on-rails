@@ -5,7 +5,7 @@ WORKDIR /src
 # Copy csproj files and restore dependencies
 COPY ["ByCoders.CNAB.Core/ByCoders.CNAB.Core.csproj", "ByCoders.CNAB.Core/"]
 COPY ["ByCoders.CNAB.Domain/ByCoders.CNAB.Domain.csproj", "ByCoders.CNAB.Domain/"]
-COPY ["ByCoders.CNAB.AppService/ByCoders.CNAB.Application.csproj", "ByCoders.CNAB.AppService/"]
+COPY ["ByCoders.CNAB.AppService/ByCoders.CNAB.Application.csproj", "ByCoders.CNAB.Application/"]
 COPY ["ByCoders.CNAB.Infrastructure/ByCoders.CNAB.Infrastructure.csproj", "ByCoders.CNAB.Infrastructure/"]
 COPY ["ByCoders.CNAB.Worker/ByCoders.CNAB.Worker.csproj", "ByCoders.CNAB.Worker/"]
 
