@@ -13,21 +13,6 @@ public interface ICNABFileRepository
     Task AddAsync(CNABFile cnabFile, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Finds file by ID
-    /// </summary>
-    Task<CNABFile?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Finds file by path
-    /// </summary>
-    Task<CNABFile?> GetByFilePathAsync(string filePath, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Gets all files
-    /// </summary>
-    Task<IEnumerable<CNABFile>> GetAllAsync(CancellationToken cancellationToken);
-
-    /// <summary>
     /// Finds all files by status
     /// </summary>
     Task<IEnumerable<CNABFile>> FindByStatusAsync(CNABFileStatus status, CancellationToken cancellationToken);

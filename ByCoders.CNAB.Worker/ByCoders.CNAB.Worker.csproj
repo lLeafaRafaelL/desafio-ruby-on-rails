@@ -4,7 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-ByCoders.CNAB.Worker-2024</UserSecretsId>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+
   </PropertyGroup>
 
   <ItemGroup>

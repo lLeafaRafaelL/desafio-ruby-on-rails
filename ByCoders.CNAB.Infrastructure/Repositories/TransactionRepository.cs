@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using EFCore.BulkExtensions;
 using ByCoders.CNAB.Domain.Transactions;
 using ByCoders.CNAB.Infrastructure.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ByCoders.CNAB.Infrastructure.Repositories;
 
@@ -50,42 +51,6 @@ public class TransactionRepository : ITransactionRepository
         }
     }
 
-    public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
-    {
-        return await _context.Transactions
-            .Include(t => t.TransactionType)
-            .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
-    }
-
-    public async Task<IEnumerable<Transaction>> GetAllAsync(CancellationToken cancellationToken)
-    {
-        return await _context.Transactions
-            .Include(t => t.TransactionType)
-            .OrderByDescending(t => t.TransactionDate)
-            .ThenByDescending(t => t.TransactionTime)
-            .ToListAsync(cancellationToken);
-    }
-
-    public async Task<IEnumerable<Transaction>> GetByStoreAsync(string storeName, CancellationToken cancellationToken)
-    {
-        return await _context.Transactions
-            .Include(t => t.TransactionType)
-            .Where(t => t.Store.Name == storeName)
-            .OrderByDescending(t => t.TransactionDate)
-            .ThenByDescending(t => t.TransactionTime)
-            .ToListAsync(cancellationToken);
-    }
-
-    public async Task<IEnumerable<Transaction>> GetByCNABFileIdAsync(Guid cnabFileId, CancellationToken cancellationToken)
-    {
-        return await _context.Transactions
-            .Include(t => t.TransactionType)
-            .Where(t => t.CNABFileId == cnabFileId)
-            .OrderByDescending(t => t.TransactionDate)
-            .ThenByDescending(t => t.TransactionTime)
-            .ToListAsync(cancellationToken);
-    }
-
     public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
         return await _context.Transactions
@@ -99,5 +64,28 @@ public class TransactionRepository : ITransactionRepository
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
     {
         return await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Transaction>> FindBy(Expression<Func<Transaction, bool>> predicate, CancellationToken cancellationToken, bool splitQuery = true, bool asNoTracking = false)
+    {
+        var query = _context.Transactions.Where(predicate);
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        if (splitQuery)
+            query = query.AsSplitQuery();
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Transaction>> FindBy(string storeName, DateTimeOffset startDate, DateTimeOffset endDate, CancellationToken cancellationToken)
+    {
+        return await _context.Transactions
+            .Include(t => t.TransactionType)
+            .AsSplitQuery() // Optimize performance
+            .AsNoTracking() // Optimize performance
+            .Where(t => t.Store.Name.Equals(storeName, StringComparison.InvariantCultureIgnoreCase) && t.TransactionDateTime.Date >= startDate && t.TransactionDateTime <= endDate)
+            .ToListAsync(cancellationToken);
     }
 }

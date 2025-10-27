@@ -1,4 +1,5 @@
 using ByCoders.CNAB.Domain.Transactions.Models;
+using System.Linq.Expressions;
 
 namespace ByCoders.CNAB.Domain.Transactions;
 
@@ -14,14 +15,19 @@ public interface ITransactionRepository
     Task BulkInsertAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Gets transactions by store
+    /// Finds transactions by store name and start and end date
     /// </summary>
-    Task<IEnumerable<Transaction>> GetByStoreAsync(string storeName, CancellationToken cancellationToken);
+    /// <param name="storeName"></param>
+    /// <param name="startDate"></param>
+    /// <param name="endDate"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<IEnumerable<Transaction>> FindBy(string storeName, DateTimeOffset startDate, DateTimeOffset endDate, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Gets transactions by CNAB file ID
+    /// Finds transactions by predicate
     /// </summary>
-    Task<IEnumerable<Transaction>> GetByCNABFileIdAsync(Guid cnabFileId, CancellationToken cancellationToken);
+    Task<IEnumerable<Transaction>> FindBy(Expression<Func<Transaction, bool>> predicate, CancellationToken cancellationToken, bool splitQuery = true, bool asNoTracking = false);
 
     /// <summary>
     /// Saves changes to the database

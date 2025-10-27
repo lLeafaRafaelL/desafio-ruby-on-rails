@@ -16,13 +16,13 @@ namespace ByCoders.CNAB.API.Controllers.Files;
 [Produces("application/json")]
 public class FilesController : BaseController
 {
-    private readonly IRequestHandler<UploadCNABFileRequest, UploadCNABFileResponse> _uploadHandler;
+    private readonly IRequestHandler<UploadCNABFileRequest, UploadCNABFileResponse> _handler;
 
     public FilesController(
-        UploadCNABFileHandler uploadHandler,
+        IRequestHandler<UploadCNABFileRequest, UploadCNABFileResponse> handler,
         ILogger<FilesController> logger) : base(logger)
     {
-        _uploadHandler = uploadHandler;
+        _handler = handler;
     }
 
     /// <summary>
@@ -44,8 +44,7 @@ public class FilesController : BaseController
 
         var request = new UploadCNABFileRequest(file);
 
-        var result = await _uploadHandler.HandleAsync(request, cancellationToken);
-
+        var result = await _handler.HandleAsync(request, cancellationToken);
 
         return ResponseToActionResult(result, _ => result.Value, _ => result.FailureDetails);
     }
