@@ -27,19 +27,40 @@ public class TransactionRepository : ITransactionRepository
         await using var dbTransaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
+            // Configure discriminator shadow property for each transaction
+            // BulkInsert doesn't automatically set TPH discriminators
+            foreach (var transaction in transactionsList)
+            {
+                var discriminatorValue = transaction switch
+                {
+                    Debit => (int)TransactionTypes.Debit,
+                    Credit => (int)TransactionTypes.Credit,
+                    BankSlip => (int)TransactionTypes.BankSlip,
+                    Funding => (int)TransactionTypes.Funding,
+                    LoanReceipt => (int)TransactionTypes.LoanReceipt,
+                    Sale => (int)TransactionTypes.Sales,
+                    TEDReceipt => (int)TransactionTypes.TEDReceipt,
+                    DOCReceipt => (int)TransactionTypes.DOCReceipt,
+                    Rent => (int)TransactionTypes.Rent,
+                    _ => throw new InvalidOperationException($"Unknown transaction type: {transaction.GetType().Name}")
+                };
+
+                // Set shadow property using EF Core's entry
+                _context.Entry(transaction).Property("TransactionTypeId").CurrentValue = discriminatorValue;
+            }
+
             // BulkInsert configuration optimized for Transaction entity
-            // Docs: https://github.com/borisdj/EFCore.BulkExtensions
             var bulkConfig = new BulkConfig
             {
-                SetOutputIdentity = false,      // We use Guid.NewGuid() in constructor
-                PreserveInsertOrder = false,    // Better performance when order doesn't matter
-                BatchSize = 2000,               // Optimal batch size (default is 2000)
-                BulkCopyTimeout = 300           // 5 minutes timeout for large imports
+                SetOutputIdentity = false,
+                PreserveInsertOrder = false,
+                BatchSize = 2000,
+                BulkCopyTimeout = 300
             };
 
             // Bulk insert using EFCore.BulkExtensions
             await _context.BulkInsertAsync(transactionsList, bulkConfig, null, null, cancellationToken);
-            
+
             // Commit transaction
             await dbTransaction.CommitAsync(cancellationToken);
         }
