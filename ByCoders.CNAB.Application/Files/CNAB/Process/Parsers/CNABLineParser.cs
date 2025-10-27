@@ -8,7 +8,7 @@ namespace ByCoders.CNAB.Application.Files.CNAB.Parsers;
 /// Parser for CNAB format lines - Strategy Pattern with Result Pattern
 /// Responsible for extracting data from fixed-position string format
 /// </summary>
-public class CNABLineParser
+public class CNABLineParser : ICNABLineParser
 {
     public Result<CNABFactoryParams> Parse(string line)
     {

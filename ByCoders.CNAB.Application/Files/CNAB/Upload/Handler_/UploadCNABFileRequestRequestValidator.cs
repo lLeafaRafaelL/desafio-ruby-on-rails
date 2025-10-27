@@ -9,8 +9,15 @@ internal class UploadCNABFileRequestRequestValidator : FluentDtoValidator<Upload
     {
         RuleFor(x => x.File)
             .NotNull()
-            .Must(x => x.Length > 0)
-            .Must(x => Path.GetExtension(x.FileName).ToLowerInvariant() == ".txt")
-            .WithMessage("Invalid file type. Only .txt files are allowed");
+            .DependentRules(() =>
+            {
+                RuleFor(x => x.File.Length)
+                    .GreaterThan(0);
+
+                RuleFor(x => x.File.FileName)
+                    .Must(x => Path.GetExtension(x).ToLowerInvariant() == ".txt")
+                    .WithMessage("Invalid file type. Only .txt files are allowed");
+            });
+            
     }
 }

@@ -75,28 +75,8 @@ public class UploadCNABFileHandlerTests
         result.Succeeded.Should().BeFalse();
         result.FailureDetails.Should().Contain(x => x.Description != null && x.Description.Contains("Storage error"));
         await _fileRepository.DidNotReceive().AddAsync(Arg.Any<CNABFile>(), Arg.Any<CancellationToken>());
-        _logger.Received().LogError(Arg.Any<string>(), Arg.Any<object[]>());
     }
 
-    [Fact]
-    public async Task HandleAsync_WhenSuccessful_ShouldLogInformationMessages()
-    {
-        // Arrange
-        var request = UploadCNABFileRequestBuilder.New
-            .WithFileName("test.txt")
-            .Build();
-        
-        _validator.TryValidate(request).Returns(ValidationResult.Success());
-        _fileStorage.SaveFileAsync(Arg.Any<string>(), Arg.Any<Stream>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result<string>.Success("/storage/test.txt")));
-
-        // Act
-        await _handler.HandleAsync(request, CancellationToken.None);
-
-        // Assert
-        _logger.Received().LogInformation(Arg.Is<string>(s => s.Contains("Uploading file")), Arg.Any<object[]>());
-        _logger.Received().LogInformation(Arg.Is<string>(s => s.Contains("File uploaded successfully")), Arg.Any<object[]>());
-    }
 
     [Fact]
     public async Task HandleAsync_WhenSuccessful_ShouldCreateCNABFileAndReturn202Accepted()

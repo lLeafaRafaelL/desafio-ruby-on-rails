@@ -70,7 +70,6 @@ public class UploadCNABFileRequestValidatorTests
     [InlineData("test.doc")]
     [InlineData("test.exe")]
     [InlineData("test")]
-    [InlineData("test.TXT")] // Should fail as validator uses ToLowerInvariant
     public void Validate_WhenFileExtensionIsNotTxt_ShouldReturnFailure(string fileName)
     {
         // Arrange

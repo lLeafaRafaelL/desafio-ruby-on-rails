@@ -16,7 +16,7 @@ public static class ApplicationDependencyInjection
     {
         services.AddValidatorsFromAssemblies(new[] { typeof(ApplicationDependencyInjection).Assembly });
 
-        services.AddScoped<CNABLineParser>();
+        services.AddScoped<ICNABLineParser, CNABLineParser>();
         services.AddScoped<IProcessCNABFileService, ProcessCNABFileService>();
         services.AddScoped<ITransactionFactory, TransactionFactory>();
 

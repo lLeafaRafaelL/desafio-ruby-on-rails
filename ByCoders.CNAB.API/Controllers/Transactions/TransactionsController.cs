@@ -1,4 +1,3 @@
-using ByCoders.CNAB.Application.Files.CNAB.Upload;
 using ByCoders.CNAB.Application.Transactions.FindTransactions;
 using ByCoders.CNAB.Core;
 using ByCoders.CNAB.Core.Http;

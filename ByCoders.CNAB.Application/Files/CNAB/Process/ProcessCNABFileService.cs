@@ -18,11 +18,11 @@ public class ProcessCNABFileService : IProcessCNABFileService
     private readonly ICNABFileRepository _fileRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IFileStorageService _fileStorage;
-    private readonly CNABLineParser _parser;
+    private readonly ICNABLineParser _parser;
     private readonly ITransactionFactory _factory;
     private readonly ILogger<ProcessCNABFileService> _logger;
 
-    public ProcessCNABFileService(ICNABFileRepository fileRepository, ITransactionRepository transactionRepository, IFileStorageService fileStorage, CNABLineParser parser, ITransactionFactory factory, ILogger<ProcessCNABFileService> logger)
+    public ProcessCNABFileService(ICNABFileRepository fileRepository, ITransactionRepository transactionRepository, IFileStorageService fileStorage, ICNABLineParser parser, ITransactionFactory factory, ILogger<ProcessCNABFileService> logger)
     {
         _fileRepository = fileRepository;
         _transactionRepository = transactionRepository;
