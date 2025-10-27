@@ -46,7 +46,7 @@ public class TransactionStatementRequestValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.FailureDetails.Should().Contain(x =>
-            x.PropertyName == nameof(TransactionStatementRequest.StoreName));
+            x.Tag == nameof(TransactionStatementRequest.StoreName));
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class TransactionStatementRequestValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.FailureDetails.Should().Contain(x =>
-            x.PropertyName == nameof(TransactionStatementRequest.StoreName));
+            x.Tag == nameof(TransactionStatementRequest.StoreName));
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class TransactionStatementRequestValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.FailureDetails.Should().Contain(x =>
-            x.PropertyName == nameof(TransactionStatementRequest.StartDate));
+            x.Tag == nameof(TransactionStatementRequest.StartDate));
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class TransactionStatementRequestValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.FailureDetails.Should().Contain(x =>
-            x.PropertyName == nameof(TransactionStatementRequest.StartDate));
+            x.Tag == nameof(TransactionStatementRequest.StartDate));
     }
 
     [Fact]
@@ -119,8 +119,8 @@ public class TransactionStatementRequestValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.FailureDetails.Should().Contain(x =>
-            x.PropertyName == nameof(TransactionStatementRequest.EndDate) ||
-            x.PropertyName == nameof(TransactionStatementRequest.StartDate));
+            x.Tag == nameof(TransactionStatementRequest.EndDate) ||
+            x.Tag == nameof(TransactionStatementRequest.StartDate));
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class TransactionStatementRequestValidatorTests
         // Assert
         result.IsValid.Should().BeFalse();
         result.FailureDetails.Should().Contain(x =>
-            x.PropertyName == nameof(TransactionStatementRequest.EndDate));
+            x.Tag == nameof(TransactionStatementRequest.EndDate));
     }
 
     [Fact]
