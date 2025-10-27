@@ -85,8 +85,7 @@ public class TransactionBuilder
             .HasMaxLength(14);
 
             store
-            .HasIndex(x => x.Name)
-            .IsUnique();
+            .HasIndex(x => x.Name);
         });
     }
 }
