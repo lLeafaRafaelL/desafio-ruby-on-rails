@@ -20,7 +20,8 @@ public static class RequestHandlerDependencyInjectionExtensions
 
         var types = AppDomain.CurrentDomain
             .GetAssemblies()
-            .SelectMany(a => a.GetTypes().Where(t => !t.IsAbstract && t.GetInterfaces().Any(filter)));
+            .SelectMany(a => a.GetTypes().Where(t => !t.IsAbstract && t.GetInterfaces().Any(filter)))
+            .ToList();
 
         foreach (var type in types)
         {

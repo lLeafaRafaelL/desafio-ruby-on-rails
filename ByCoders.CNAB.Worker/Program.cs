@@ -70,8 +70,6 @@ builder.ConfigureServices((hostContext, services) =>
         .AddInfrastructure(connectionString)
         .AddApplications();
 
-    builder.UseSerilog();
-
     // Em Program.cs do Worker
     services.AddScoped<CNABFileProcessor>();
 
@@ -85,6 +83,8 @@ builder.ConfigureServices((hostContext, services) =>
     // Add Background Service for CNAB file processing
     services.AddHostedService<CNABFileProcessorBackgroundService>();
 });
+
+builder.ConfigureSerilog();
 
 var host = builder.Build();
 

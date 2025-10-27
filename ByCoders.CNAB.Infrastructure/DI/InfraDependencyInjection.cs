@@ -36,7 +36,7 @@ public static class InfraDependencyInjection
     /// Configure Serlilog using appsettings
     /// </summary>
     /// <param name="builder"></param>
-    public static void ConfigureSerilog(IHostBuilder builder)
+    public static void ConfigureSerilog(this IHostBuilder builder)
     {
         builder.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
     }
