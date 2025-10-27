@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ByCoders.CNAB.Domain.Transactions.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Builders;
 
@@ -34,21 +35,28 @@ public class TransactionBuilder
             .IsRequired();
 
         builder
-            .Property(x => x.TransactionDate)
+            .Property(x => x.TransactionDateTime)
             .IsRequired();
 
         builder
-            .Property(x => x.TransactionTime)
-            .IsRequired();
+            .Ignore(x => x.TransactionDate); 
+        
+        builder
+            .Ignore(x => x.TransactionTime);
 
+        builder
+            .Property(x => x.CNABFileId)
+            .IsRequired(false);
 
+        builder
+            .HasIndex(x => x.CNABFileId);
 
         builder.OwnsOne(x => x.Beneficiary, beneficiary =>
         {
             beneficiary
             .Property(x => x.Document)
             .IsRequired()
-            .IsUnicode(false)
+            .HasColumnType("varchar")
             .HasMaxLength(11);
         });
 
@@ -57,7 +65,7 @@ public class TransactionBuilder
             card
             .Property(x => x.Number)
             .IsRequired()
-            .IsUnicode(false)
+            .HasColumnType("varchar")
             .HasMaxLength(12);
         });
 
@@ -66,12 +74,12 @@ public class TransactionBuilder
             store
             .Property(x => x.Name)
             .IsRequired()
-            .IsUnicode(false)
+            .HasColumnType("varchar")
             .HasMaxLength(19);
 
             store.Property(x => x.Owner)
             .IsRequired()
-            .IsUnicode(false)
+            .HasColumnType("varchar")
             .HasMaxLength(14);
 
             store

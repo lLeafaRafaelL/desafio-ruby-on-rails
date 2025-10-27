@@ -11,15 +11,20 @@ public interface ITransactionRepository
     /// <summary>
     /// Bulk insert multiple transactions (high performance)
     /// </summary>
-    Task BulkInsertAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default);
+    Task BulkInsertAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken);
 
     /// <summary>
     /// Gets transactions by store
     /// </summary>
-    Task<IEnumerable<Transaction>> GetByStoreAsync(string storeName, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Transaction>> GetByStoreAsync(string storeName, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets transactions by CNAB file ID
+    /// </summary>
+    Task<IEnumerable<Transaction>> GetByCNABFileIdAsync(Guid cnabFileId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Saves changes to the database
     /// </summary>
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

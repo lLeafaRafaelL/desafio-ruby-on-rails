@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-ByCoders.CNAB.Worker-2024</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ByCoders.CNAB.Application\ByCoders.CNAB.Application.csproj" />
+    <ProjectReference Include="..\ByCoders.CNAB.Core\ByCoders.CNAB.Core.csproj" />
+    <ProjectReference Include="..\ByCoders.CNAB.Domain\ByCoders.CNAB.Domain.csproj" />
+    <ProjectReference Include="..\ByCoders.CNAB.Infrastructure\ByCoders.CNAB.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

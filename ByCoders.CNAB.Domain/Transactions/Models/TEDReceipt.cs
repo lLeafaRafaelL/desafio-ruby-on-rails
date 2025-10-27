@@ -1,14 +1,13 @@
 namespace ByCoders.CNAB.Domain.Transactions.Models;
 
 /// <summary>
-/// Recebimento TED - Tipo 7
-/// Natureza: ENTRADA (+)
-/// Conforme README.md do projeto
+/// Ted Receipt  - Type 7
+/// Nature: Cash In (+)
 /// </summary>
 public class TEDReceipt : Transaction
 {
-    public TEDReceipt(DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
-        : base(TransactionTypes.TEDReceipt, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
+    public TEDReceipt(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
+        : base(TransactionTypes.TEDReceipt, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {
     }
 

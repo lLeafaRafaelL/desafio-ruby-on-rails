@@ -1,5 +1,10 @@
 ﻿namespace ByCoders.CNAB.Domain.Transactions.Models;
 
+
+/// <summary>
+/// Transaction Types
+/// Represent the type of transaction
+/// </summary>
 public record TransactionType
 {
     private TransactionType()

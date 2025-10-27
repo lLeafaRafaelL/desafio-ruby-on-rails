@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ByCoders.CNAB.Domain.Transactions.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Builders;
 
@@ -14,7 +15,7 @@ public class TransactionTypeBuilder
             .ValueGeneratedNever();
 
         builder.Property(x => x.Description)
-            .IsUnicode(false)
+            .HasColumnType("varchar")
             .HasMaxLength(30)
             .IsRequired();
 

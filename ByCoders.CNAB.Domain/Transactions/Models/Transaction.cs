@@ -1,4 +1,5 @@
-﻿using System;
+using ByCoders.CNAB.Domain.Files.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +11,13 @@ public abstract class Transaction
 {
     protected Transaction()
     {
-        Id = Guid.NewGuid();
+        Id = Guid.CreateVersion7();
         CreatedOn = DateTimeOffset.UtcNow;
     }
 
     protected Transaction(
         TransactionTypes transactionType,
+        Guid cnabFileId,
         DateOnly transactionDate,
         TimeOnly transactionTimeUtc,
         decimal amountCNAB,
@@ -23,8 +25,8 @@ public abstract class Transaction
         Card card,
         Store store) : this()
     {
-        TransactionDate = transactionDate;
-        TransactionTime = transactionTimeUtc;
+        CNABFileId = cnabFileId;
+        TransactionDateTime = new DateTimeOffset(transactionDate.Year, transactionDate.Month, transactionDate.Day, transactionTimeUtc.Hour, transactionTimeUtc.Minute, transactionTimeUtc.Second, TimeSpan.Zero);
         TransactionType = new TransactionType(transactionType);
         AmountCNAB = amountCNAB;
         Beneficiary = beneficiary;
@@ -32,17 +34,27 @@ public abstract class Transaction
         Store = store;
     }
 
-    public TransactionType TransactionType { get; protected set; }
+    // Identity
     public Guid Id { get; protected set; }
     public DateTimeOffset CreatedOn { get; init; }
-    public DateOnly TransactionDate { get; protected set; }
-    public TimeOnly TransactionTime { get; protected set; }
+
+    // Reference to the CNAB file
+    public Guid? CNABFileId { get; internal set; }
+
+    // Transaction data
+    public TransactionType TransactionType { get; protected set; }
+    public DateTimeOffset TransactionDateTime { get; protected set; }
+    public DateOnly TransactionDate => DateOnly.FromDateTime(TransactionDateTime.Date);
+    public TimeOnly TransactionTime => TimeOnly.FromTimeSpan(TransactionDateTime.TimeOfDay);
     public decimal AmountCNAB { get; protected set; }
     public virtual decimal TransactionValue => AmountCNAB / 100;
 
+    // Value Objects
     public Beneficiary Beneficiary { get; protected set; }
     public Card Card { get; protected set; }
     public Store Store { get; protected set; }
+
+
 }
 
 public record Beneficiary(string Document);

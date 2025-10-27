@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # API - Upload e consulta de arquivos/transações
+  cnab-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.API
+    container_name: cnab-api
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=cnab_db;Username=cnab_user;Password=cnab_pass123
+      - FileStorage__BasePath=/app/storage
+    volumes:
+      - cnab-files:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cnab-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Worker - Processamento assíncrono de arquivos
+  cnab-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.Worker
+    container_name: cnab-worker
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=cnab_db;Username=cnab_user;Password=cnab_pass123
+      - FileStorage__BasePath=/app/storage
+    volumes:
+      - cnab-files:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cnab-api:
+        condition: service_started
+    networks:
+      - cnab-network
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: cnab-postgres
+    environment:
+      - POSTGRES_DB=cnab_db
+      - POSTGRES_USER=cnab_user
+      - POSTGRES_PASSWORD=cnab_pass123
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - cnab-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cnab_user -d cnab_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  # Volume para arquivos CNAB (compartilhado entre API e Worker)
+  cnab-files:
+    driver: local
+
+  # Volume para dados do PostgreSQL
+  postgres-data:
+    driver: local
+
+networks:
+  cnab-network:
+    driver: bridge

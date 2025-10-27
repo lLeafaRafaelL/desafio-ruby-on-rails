@@ -1,16 +1,15 @@
 namespace ByCoders.CNAB.Domain.Transactions.Models;
 
 /// <summary>
-/// Débito - Tipo 1
-/// Natureza: ENTRADA (+)
-/// Conforme README.md do projeto
+/// Debit - Type 1
+/// Nature: Cash In (+)
 /// </summary>
 public class Debit : Transaction
 {
-    public Debit(DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
-        : base(TransactionTypes.Debit, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
+    public Debit(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
+        : base(TransactionTypes.Debit, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {
     }
     
-    // Debit é ENTRADA, usa o padrão positivo da classe base (AmountCNAB / 100)
+    // Debit is INFLOW, uses the positive default from base class (AmountCNAB / 100)
 }

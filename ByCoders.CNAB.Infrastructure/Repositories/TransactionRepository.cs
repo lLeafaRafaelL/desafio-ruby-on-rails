@@ -1,14 +1,11 @@
-using ByCoders.CNAB.Domain.Transactions;
 using ByCoders.CNAB.Domain.Transactions.Models;
 using ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Configurations;
 using Microsoft.EntityFrameworkCore;
 using EFCore.BulkExtensions;
+using ByCoders.CNAB.Domain.Transactions;
 
 namespace ByCoders.CNAB.Infrastructure.Repositories;
 
-/// <summary>
-/// Repository implementation for Transaction entity using Entity Framework Core
-/// </summary>
 public class TransactionRepository : ITransactionRepository
 {
     private readonly TransactionDbContext _context;
@@ -18,17 +15,7 @@ public class TransactionRepository : ITransactionRepository
         _context = context;
     }
 
-    public async Task AddAsync(Transaction transaction, CancellationToken cancellationToken = default)
-    {
-        await _context.Transactions.AddAsync(transaction, cancellationToken);
-    }
-
-    public async Task AddRangeAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default)
-    {
-        await _context.Transactions.AddRangeAsync(transactions, cancellationToken);
-    }
-
-    public async Task BulkInsertAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default)
+    public async Task BulkInsertAsync(IEnumerable<Transaction> transactions, CancellationToken cancellationToken)
     {
         var transactionsList = transactions.ToList();
         if (!transactionsList.Any())
@@ -62,14 +49,14 @@ public class TransactionRepository : ITransactionRepository
         }
     }
 
-    public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Transactions
             .Include(t => t.TransactionType)
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<Transaction>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Transaction>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Transactions
             .Include(t => t.TransactionType)
@@ -78,7 +65,7 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Transaction>> GetByStoreAsync(string storeName, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Transaction>> GetByStoreAsync(string storeName, CancellationToken cancellationToken)
     {
         return await _context.Transactions
             .Include(t => t.TransactionType)
@@ -88,7 +75,17 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Transaction>> GetByCNABFileIdAsync(Guid cnabFileId, CancellationToken cancellationToken)
+    {
+        return await _context.Transactions
+            .Include(t => t.TransactionType)
+            .Where(t => t.CNABFileId == cnabFileId)
+            .OrderByDescending(t => t.TransactionDate)
+            .ThenByDescending(t => t.TransactionTime)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Transaction>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
         return await _context.Transactions
             .Include(t => t.TransactionType)
@@ -98,7 +95,7 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
     {
         return await _context.SaveChangesAsync(cancellationToken);
     }

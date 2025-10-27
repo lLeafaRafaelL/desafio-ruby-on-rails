@@ -1,12 +1,23 @@
-﻿namespace ByCoders.CNAB.Core;
+﻿using FluentValidation;
 
-public record RequestDto();
-public record ResponseDto();
+namespace ByCoders.CNAB.Core;
+
+public record Dto();
 
 public interface IRequestHandler<TRequest, TResponse>
-    where TRequest : RequestDto
-    where TResponse : ResponseDto
+    where TRequest : Dto
+    where TResponse : Dto
 
 {
-    Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
+    Task<RequestHandlerResult<TResponse>> HandleAsync(TRequest request, CancellationToken cancellationToken);
+}
+
+
+public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
+    where TRequest : Dto
+    where TResponse : Dto
+{
+    private readonly IValidator<TRequest> validator;
+
+    public abstract Task<RequestHandlerResult<TResponse>> HandleAsync(TRequest input, CancellationToken cancellationToken);
 }

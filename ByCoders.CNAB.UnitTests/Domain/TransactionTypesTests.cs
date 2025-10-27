@@ -1,4 +1,5 @@
 using ByCoders.CNAB.Domain.Transactions.Models;
+using ByCoders.CNAB.UnitTests.Builders.Domain;
 using FluentAssertions;
 using Xunit;
 
@@ -6,12 +7,6 @@ namespace ByCoders.CNAB.UnitTests.Domain;
 
 public class TransactionTypesTests
 {
-    private readonly Beneficiary _beneficiary = new("12345678901");
-    private readonly Card _card = new("1234****5678");
-    private readonly Store _store = new("Test Store", "John Doe");
-    private readonly DateOnly _date = new(2019, 03, 01);
-    private readonly TimeOnly _time = new(15, 30, 45);
-    private const decimal Amount = 10000m; // R$ 100.00
 
     #region Cash In Transactions (Positive Values)
 
@@ -19,23 +14,27 @@ public class TransactionTypesTests
     public void Debit_ShouldHavePositiveValue()
     {
         // Arrange & Act
-        var transaction = new Debit(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = DebitBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.Debit);
-        transaction.AmountCNAB.Should().Be(Amount);
-        transaction.TransactionValue.Should().Be(100m); // Positive: Cash In (conforme README.md)
+        transaction.AmountCNAB.Should().Be(10000m);
+        transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
 
     [Fact]
     public void Credit_ShouldHavePositiveValue()
     {
         // Arrange & Act
-        var transaction = new Credit(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = CreditBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.Credit);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
 
@@ -43,11 +42,13 @@ public class TransactionTypesTests
     public void Sale_ShouldHavePositiveValue()
     {
         // Arrange & Act
-        var transaction = new Sale(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = SaleBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.Sales);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
 
@@ -55,11 +56,13 @@ public class TransactionTypesTests
     public void LoanReceipt_ShouldHavePositiveValue()
     {
         // Arrange & Act
-        var transaction = new LoanReceipt(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = LoanReceiptBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.LoanReceipt);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
 
@@ -67,11 +70,13 @@ public class TransactionTypesTests
     public void TEDReceipt_ShouldHavePositiveValue()
     {
         // Arrange & Act
-        var transaction = new TEDReceipt(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = TEDReceiptBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.TEDReceipt);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
 
@@ -79,11 +84,13 @@ public class TransactionTypesTests
     public void DOCReceipt_ShouldHavePositiveValue()
     {
         // Arrange & Act
-        var transaction = new DOCReceipt(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = DOCReceiptBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.DOCReceipt);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
 
@@ -95,11 +102,13 @@ public class TransactionTypesTests
     public void BankSlip_ShouldHaveNegativeValue()
     {
         // Arrange & Act
-        var transaction = new BankSlip(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = BankSlipBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.BankSlip);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(-100m); // Negative: Cash Out
     }
 
@@ -107,11 +116,13 @@ public class TransactionTypesTests
     public void Funding_ShouldHaveNegativeValue()
     {
         // Arrange & Act
-        var transaction = new Funding(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = FundingBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.Funding);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(-100m); // Negative: Cash Out
     }
 
@@ -119,11 +130,13 @@ public class TransactionTypesTests
     public void Rent_ShouldHaveNegativeValue()
     {
         // Arrange & Act
-        var transaction = new Rent(_date, _time, Amount, _beneficiary, _card, _store);
+        var transaction = RentBuilder.New
+            .WithAmountCNAB(10000m)
+            .Build();
 
         // Assert
         transaction.TransactionType.Id.Should().Be((int)TransactionTypes.Rent);
-        transaction.AmountCNAB.Should().Be(Amount);
+        transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(-100m); // Negative: Cash Out
     }
 
@@ -146,15 +159,15 @@ public class TransactionTypesTests
         // Arrange & Act
         Transaction transaction = type switch
         {
-            TransactionTypes.Debit => new Debit(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.BankSlip => new BankSlip(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Funding => new Funding(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Credit => new Credit(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.LoanReceipt => new LoanReceipt(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Sales => new Sale(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.TEDReceipt => new TEDReceipt(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.DOCReceipt => new DOCReceipt(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Rent => new Rent(_date, _time, Amount, _beneficiary, _card, _store),
+            TransactionTypes.Debit => DebitBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.BankSlip => BankSlipBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Funding => FundingBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Credit => CreditBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.LoanReceipt => LoanReceiptBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Sales => SaleBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.TEDReceipt => TEDReceiptBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.DOCReceipt => DOCReceiptBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Rent => RentBuilder.New.WithAmountCNAB(10000m).Build(),
             _ => throw new ArgumentException("Invalid type")
         };
 
@@ -221,11 +234,10 @@ public class TransactionTypesTests
     [Fact]
     public void Transaction_WithLargeAmount_ShouldCalculateCorrectly()
     {
-        // Arrange
-        var largeAmount = 999999999m;
-
-        // Act
-        var transaction = new Sale(_date, _time, largeAmount, _beneficiary, _card, _store);
+        // Arrange & Act
+        var transaction = SaleBuilder.New
+            .WithAmountCNAB(999999999m)
+            .Build();
 
         // Assert
         transaction.TransactionValue.Should().Be(9999999.99m);
@@ -234,11 +246,10 @@ public class TransactionTypesTests
     [Fact]
     public void Transaction_WithDecimalAmount_ShouldMaintainPrecision()
     {
-        // Arrange
-        var amount = 12345m; // R$ 123.45
-
-        // Act
-        var transaction = new Sale(_date, _time, amount, _beneficiary, _card, _store);
+        // Arrange & Act
+        var transaction = SaleBuilder.New
+            .WithAmountCNAB(12345m) // BRL 123.45
+            .Build();
 
         // Assert
         transaction.TransactionValue.Should().Be(123.45m);
@@ -247,11 +258,10 @@ public class TransactionTypesTests
     [Fact]
     public void NegativeTransaction_WithDecimalAmount_ShouldMaintainNegativePrecision()
     {
-        // Arrange
-        var amount = 12345m; // R$ 123.45
-
-        // Act
-        var transaction = new BankSlip(_date, _time, amount, _beneficiary, _card, _store);
+        // Arrange & Act
+        var transaction = BankSlipBuilder.New
+            .WithAmountCNAB(12345m) // BRL 123.45
+            .Build();
 
         // Assert
         transaction.TransactionValue.Should().Be(-123.45m);
@@ -262,7 +272,7 @@ public class TransactionTypesTests
     #region Business Rules
 
     [Theory]
-    [InlineData(TransactionTypes.Debit, 1)]  // ENTRADA (+) conforme README.md
+    [InlineData(TransactionTypes.Debit, 1)]
     [InlineData(TransactionTypes.BankSlip, -1)]
     [InlineData(TransactionTypes.Funding, -1)]
     [InlineData(TransactionTypes.Rent, -1)]
@@ -276,15 +286,15 @@ public class TransactionTypesTests
         // Arrange & Act
         Transaction transaction = type switch
         {
-            TransactionTypes.Debit => new Debit(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.BankSlip => new BankSlip(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Funding => new Funding(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Rent => new Rent(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Credit => new Credit(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.LoanReceipt => new LoanReceipt(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.Sales => new Sale(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.TEDReceipt => new TEDReceipt(_date, _time, Amount, _beneficiary, _card, _store),
-            TransactionTypes.DOCReceipt => new DOCReceipt(_date, _time, Amount, _beneficiary, _card, _store),
+            TransactionTypes.Debit => DebitBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.BankSlip => BankSlipBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Funding => FundingBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Rent => RentBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Credit => CreditBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.LoanReceipt => LoanReceiptBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.Sales => SaleBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.TEDReceipt => TEDReceiptBuilder.New.WithAmountCNAB(10000m).Build(),
+            TransactionTypes.DOCReceipt => DOCReceiptBuilder.New.WithAmountCNAB(10000m).Build(),
             _ => throw new ArgumentException("Invalid type")
         };
 

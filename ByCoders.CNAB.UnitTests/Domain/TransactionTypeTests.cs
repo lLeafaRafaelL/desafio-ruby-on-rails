@@ -6,6 +6,11 @@ namespace ByCoders.CNAB.UnitTests.Domain;
 
 public class TransactionTypeTests
 {
+    public TransactionTypeTests()
+    {
+        
+    }
+
     [Fact]
     public void TransactionType_WithTransactionTypes_ShouldSetId()
     {

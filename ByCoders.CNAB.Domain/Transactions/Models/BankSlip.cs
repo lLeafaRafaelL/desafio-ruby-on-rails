@@ -1,14 +1,13 @@
 namespace ByCoders.CNAB.Domain.Transactions.Models;
 
 /// <summary>
-/// Boleto - Tipo 2
-/// Natureza: SAÍDA (-)
-/// Conforme README.md do projeto
+/// BankSlip - Type 2
+/// Nature: Cash Out (-)
 /// </summary>
 public class BankSlip : Transaction
 {
-    public BankSlip(DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
-        : base(TransactionTypes.BankSlip, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
+    public BankSlip(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
+        : base(TransactionTypes.BankSlip, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {
     }
 

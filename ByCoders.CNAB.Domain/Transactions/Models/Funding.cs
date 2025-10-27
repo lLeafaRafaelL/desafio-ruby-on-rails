@@ -1,14 +1,13 @@
 namespace ByCoders.CNAB.Domain.Transactions.Models;
 
 /// <summary>
-/// Financiamento - Tipo 3
-/// Natureza: SAÍDA (-)
-/// Conforme README.md do projeto
+/// Funding - Type 3
+/// Nature: Cash Out (-)
 /// </summary>
 public class Funding : Transaction
 {
-    public Funding(DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
-        : base(TransactionTypes.Funding, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
+    public Funding(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
+        : base(TransactionTypes.Funding, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {
     }
 
