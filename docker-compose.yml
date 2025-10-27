@@ -21,7 +21,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=cnab_db;Username=cnab_user;Password=cnab_pass123
-      - FileStorage__BasePath=/app/storage
+      - FileStorage__StoragePath=/app/storage
     volumes:
       - cnab-files:/app/storage
     depends_on:
@@ -48,7 +48,8 @@ services:
       - ASPNETCORE_URLS=http://+:8081
       - DOTNET_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=cnab_db;Username=cnab_user;Password=cnab_pass123
-      - FileStorage__BasePath=/app/storage
+      - FileStorage__StoragePath=/app/storage
+      - CNABFileProcessor__PoolingIntervalSeconds= 30
     volumes:
       - cnab-files:/app/storage
     depends_on:

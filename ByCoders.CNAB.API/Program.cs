@@ -1,3 +1,4 @@
+using ByCoders.CNAB.API.Configurations;
 using ByCoders.CNAB.API.Filters;
 using ByCoders.CNAB.API.Middlewares;
 using ByCoders.CNAB.Application.DI;
@@ -6,6 +7,7 @@ using ByCoders.CNAB.Infrastructure.DI;
 using ByCoders.CNAB.Infrastructure.Extensions;
 using HealthChecks.UI.Client;
 using Serilog;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +40,20 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "API for CNAB file upload and transaction queries"
     });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
 });
+
+builder.Services
+    .AddOptions<FileStorageConfiguration>()
+    .Bind(builder.Configuration.GetSection("FileStorage"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 // Add application layers
 builder.Services.AddInfrastructure(connectionString);
@@ -55,20 +70,26 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-
 var app = builder.Build();
 
 // Apply migrations automatically
 app.Services.ApplyMigrations();
 
 app.UseSwagger()
-    .UseSwaggerUI()
+    .UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CNAB API v1");
+        c.RoutePrefix = string.Empty; // Define Swagger na raiz "/"
+    })
     .UseSerilogRequestLogging()
     .UseCors();
 
 app.UseRouting();
 app.MapControllers();
+
+// Redirecionar raiz para Swagger
+app.MapGet("/", () => Results.Redirect("/swagger"))
+   .ExcludeFromDescription();
 
 app.UsePrometheus(options =>
 {

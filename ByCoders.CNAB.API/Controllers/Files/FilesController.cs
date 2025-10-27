@@ -34,10 +34,11 @@ public class FilesController : BaseController
     /// <response code="202">File uploaded successfully and awaiting processing</response>
     /// <response code="400">Invalid file or processing error</response>
     [HttpPost]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(UploadCNABFileResponse), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ResultFailureDetail), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UploadAsync(
-        [FromForm] IFormFile file,
+        IFormFile file,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("CNAB File received: {FileName}", file?.FileName);
