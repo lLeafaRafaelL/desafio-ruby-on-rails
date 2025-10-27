@@ -1,407 +1,473 @@
 {
-  "info": {
-    "name": "CNAB API",
-    "description": "Collection para testar a API de processamento de arquivos CNAB",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "12345678"
-  },
-  "item": [
-    {
-      "name": "Files",
-      "item": [
-        {
-          "name": "Upload CNAB File",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 202\", function () {",
-                  "    pm.response.to.have.status(202);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has fileId\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.fileId).to.be.a('string');",
-                  "    pm.environment.set(\"fileId\", jsonData.fileId);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has fileName\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.fileName).to.eql('CNAB.txt');",
-                  "});",
-                  "",
-                  "pm.test(\"Status is Pending or Processing\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.be.oneOf([0, 1]);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "file",
-                  "type": "file",
-                  "src": "CNAB.txt",
-                  "description": "Arquivo CNAB para upload"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/files",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "files"]
-            },
-            "description": "Faz upload de um arquivo CNAB para processamento assíncrono.\n\n**Retorna:**\n- 202 Accepted: Arquivo aceito e aguardando processamento\n- 400 Bad Request: Arquivo inválido ou erro de validação"
-          },
-          "response": [
-            {
-              "name": "Success - 202 Accepted",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "file",
-                      "type": "file",
-                      "src": "CNAB.txt"
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/files",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "files"]
-                }
-              },
-              "status": "Accepted",
-              "code": 202,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"fileId\": \"01938e6f-7890-7abc-b123-456789abcdef\",\n    \"fileName\": \"CNAB.txt\",\n    \"status\": 1\n}"
-            },
-            {
-              "name": "Error - 400 Bad Request",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "file",
-                      "type": "file",
-                      "src": ""
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/files",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "files"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"failureDetails\": [\n        {\n            \"description\": \"File is required\",\n            \"code\": \"FileRequired\"\n        }\n    ]\n}"
-            }
-          ]
-        }
-      ],
-      "description": "Endpoints para gerenciamento de arquivos CNAB"
-    },
-    {
-      "name": "Transactions",
-      "item": [
-        {
-          "name": "Get Transactions by Store - BAR DO JOÃO",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200 or 204\", function () {",
-                  "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
-                  "});",
-                  "",
-                  "if (pm.response.code === 200) {",
-                  "    pm.test(\"Response has transactions\", function () {",
-                  "        var jsonData = pm.response.json();",
-                  "        pm.expect(jsonData).to.have.property('transactions');",
-                  "        pm.expect(jsonData).to.have.property('accumulatedValue');",
-                  "        pm.expect(jsonData).to.have.property('totalTrsanctions');",
-                  "    });",
-                  "    ",
-                  "    pm.test(\"Accumulated value is a number\", function () {",
-                  "        var jsonData = pm.response.json();",
-                  "        pm.expect(jsonData.accumulatedValue).to.be.a('number');",
-                  "    });",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/transactions/store/BAR DO JOÃO?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "transactions", "store", "BAR DO JOÃO"],
-              "query": [
-                {
-                  "key": "fromDate",
-                  "value": "2019-03-01T00:00:00Z",
-                  "description": "Data inicial (ISO 8601)"
-                },
-                {
-                  "key": "toDate",
-                  "value": "2019-03-31T23:59:59Z",
-                  "description": "Data final (ISO 8601)"
-                }
-              ]
-            },
-            "description": "Busca todas as transações de uma loja específica em um período.\n\n**Parâmetros:**\n- storeName: Nome da loja (case sensitive)\n- fromDate: Data inicial no formato ISO 8601\n- toDate: Data final no formato ISO 8601\n\n**Retorna:**\n- 200 OK: Transações encontradas com saldo acumulado\n- 204 No Content: Nenhuma transação encontrada\n- 400 Bad Request: Parâmetros inválidos"
-          },
-          "response": [
-            {
-              "name": "Success - 200 OK",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/transactions/store/BAR DO JOÃO?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "transactions", "store", "BAR DO JOÃO"],
-                  "query": [
-                    {
-                      "key": "fromDate",
-                      "value": "2019-03-01T00:00:00Z"
-                    },
-                    {
-                      "key": "toDate",
-                      "value": "2019-03-31T23:59:59Z"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"startDate\": \"2019-03-01T00:00:00+00:00\",\n    \"endDate\": \"2019-03-31T23:59:59+00:00\",\n    \"totalTrsanctions\": 5,\n    \"accumulatedValue\": 125.00,\n    \"transactions\": [\n        {\n            \"id\": \"01938e6f-1111-7abc-b123-456789abcdef\",\n            \"createdOn\": \"2025-10-27T10:30:00+00:00\",\n            \"cnabFileId\": \"01938e6f-7890-7abc-b123-456789abcdef\",\n            \"transactionType\": {\n                \"id\": 3,\n                \"description\": \"Funding\",\n                \"nature\": 2\n            },\n            \"transactionDateTime\": \"2019-03-01T15:34:53+00:00\",\n            \"transactionDate\": \"2019-03-01\",\n            \"transactionTime\": \"15:34:53\",\n            \"amountCNAB\": 14200,\n            \"transactionValue\": 142.00,\n            \"beneficiary\": {\n                \"document\": \"09620676017\"\n            },\n            \"card\": {\n                \"number\": \"4753****3153\"\n            },\n            \"store\": {\n                \"name\": \"BAR DO JOÃO\",\n                \"owner\": \"JOÃO MACEDO\"\n            }\n        },\n        {\n            \"id\": \"01938e6f-2222-7abc-b123-456789abcdef\",\n            \"createdOn\": \"2025-10-27T10:30:00+00:00\",\n            \"cnabFileId\": \"01938e6f-7890-7abc-b123-456789abcdef\",\n            \"transactionType\": {\n                \"id\": 2,\n                \"description\": \"Bank Slip\",\n                \"nature\": 2\n            },\n            \"transactionDateTime\": \"2019-03-01T00:99:23Z\",\n            \"transactionDate\": \"2019-03-01\",\n            \"transactionTime\": \"00:99:23\",\n            \"amountCNAB\": 11200,\n            \"transactionValue\": 112.00,\n            \"beneficiary\": {\n                \"document\": \"09620676017\"\n            },\n            \"card\": {\n                \"number\": \"3648****0099\"\n            },\n            \"store\": {\n                \"name\": \"BAR DO JOÃO\",\n                \"owner\": \"JOÃO MACEDO\"\n            }\n        }\n    ]\n}"
-            },
-            {
-              "name": "No Content - 204",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/transactions/store/LOJA INEXISTENTE?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "transactions", "store", "LOJA INEXISTENTE"],
-                  "query": [
-                    {
-                      "key": "fromDate",
-                      "value": "2019-03-01T00:00:00Z"
-                    },
-                    {
-                      "key": "toDate",
-                      "value": "2019-03-31T23:59:59Z"
-                    }
-                  ]
-                }
-              },
-              "status": "No Content",
-              "code": 204,
-              "_postman_previewlanguage": "plain",
-              "header": [],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Get Transactions by Store - LOJA DO Ó - MATRIZ",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200 or 204\", function () {",
-                  "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/transactions/store/LOJA DO Ó - MATRIZ?fromDate=2019-03-01T00:00:00Z&toDate=2019-12-31T23:59:59Z",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "transactions", "store", "LOJA DO Ó - MATRIZ"],
-              "query": [
-                {
-                  "key": "fromDate",
-                  "value": "2019-03-01T00:00:00Z"
-                },
-                {
-                  "key": "toDate",
-                  "value": "2019-12-31T23:59:59Z"
-                }
-              ]
-            },
-            "description": "Exemplo de consulta para a loja 'LOJA DO Ó - MATRIZ'"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Transactions by Store - MERCADO DA AVENIDA",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/transactions/store/MERCADO DA AVENIDA?fromDate=2019-01-01T00:00:00Z&toDate=2019-12-31T23:59:59Z",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "transactions", "store", "MERCADO DA AVENIDA"],
-              "query": [
-                {
-                  "key": "fromDate",
-                  "value": "2019-01-01T00:00:00Z"
-                },
-                {
-                  "key": "toDate",
-                  "value": "2019-12-31T23:59:59Z"
-                }
-              ]
-            },
-            "description": "Exemplo de consulta para todo o ano de 2019"
-          },
-          "response": []
-        }
-      ],
-      "description": "Endpoints para consulta de transações"
-    },
-    {
-      "name": "Health Checks",
-      "item": [
-        {
-          "name": "Liveness Check",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Status is Healthy\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql('Healthy');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/health/liveness",
-              "host": ["{{baseUrl}}"],
-              "path": ["health", "liveness"]
-            },
-            "description": "Verifica se a aplicação está rodando"
-          },
-          "response": []
-        },
-        {
-          "name": "Readiness Check",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/health/readiness",
-              "host": ["{{baseUrl}}"],
-              "path": ["health", "readiness"]
-            },
-            "description": "Verifica se a aplicação está pronta para receber requisições"
-          },
-          "response": []
-        }
-      ],
-      "description": "Endpoints de health check para monitoramento"
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:5000",
-      "type": "string"
-    }
-  ]
+	"info": {
+		"_postman_id": "b861cd80-ad47-4654-a6a0-30896c9045ae",
+		"name": "CNAB API",
+		"description": "Collection para testar a API de processamento de arquivos CNAB",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4825585"
+	},
+	"item": [
+		{
+			"name": "Files",
+			"item": [
+				{
+					"name": "Upload CNAB File",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 202\", function () {",
+									"    pm.response.to.have.status(202);",
+									"});",
+									"",
+									"pm.test(\"Response has fileId\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.fileId).to.be.a('string');",
+									"    pm.environment.set(\"fileId\", jsonData.fileId);",
+									"});",
+									"",
+									"pm.test(\"Response has fileName\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.fileName).to.eql('CNAB.txt');",
+									"});",
+									"",
+									"pm.test(\"Status is Pending or Processing\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.be.oneOf([0, 1]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "Arquivo CNAB para upload",
+									"type": "file",
+									"src": "CNAB.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/files",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"files"
+							]
+						},
+						"description": "Faz upload de um arquivo CNAB para processamento assíncrono.\n\n**Retorna:**\n- 202 Accepted: Arquivo aceito e aguardando processamento\n- 400 Bad Request: Arquivo inválido ou erro de validação"
+					},
+					"response": [
+						{
+							"name": "Success - 202 Accepted",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "CNAB.txt"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/files",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"files"
+									]
+								}
+							},
+							"status": "Accepted",
+							"code": 202,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"fileId\": \"01938e6f-7890-7abc-b123-456789abcdef\",\n    \"fileName\": \"CNAB.txt\",\n    \"status\": 1\n}"
+						},
+						{
+							"name": "Error - 400 Bad Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"value": "",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/files",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"files"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"failureDetails\": [\n        {\n            \"description\": \"File is required\",\n            \"code\": \"FileRequired\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			],
+			"description": "Endpoints para gerenciamento de arquivos CNAB"
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "Get Transactions by Store - BAR DO JOÃO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 204\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Response has transactions\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('transactions');",
+									"        pm.expect(jsonData).to.have.property('accumulatedValue');",
+									"        pm.expect(jsonData).to.have.property('totalTrsanctions');",
+									"    });",
+									"    ",
+									"    pm.test(\"Accumulated value is a number\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.accumulatedValue).to.be.a('number');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/store/BAR?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-01T23:59:59Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"store",
+								"BAR"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2019-03-01T00:00:00Z",
+									"description": "Data inicial (ISO 8601)"
+								},
+								{
+									"key": "toDate",
+									"value": "2019-03-01T23:59:59Z",
+									"description": "Data final (ISO 8601)"
+								}
+							]
+						},
+						"description": "Busca todas as transações de uma loja específica em um período.\n\n**Parâmetros:**\n- storeName: Nome da loja (case sensitive)\n- fromDate: Data inicial no formato ISO 8601\n- toDate: Data final no formato ISO 8601\n\n**Retorna:**\n- 200 OK: Transações encontradas com saldo acumulado\n- 204 No Content: Nenhuma transação encontrada\n- 400 Bad Request: Parâmetros inválidos"
+					},
+					"response": [
+						{
+							"name": "Success - 200 OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/transactions/store/BAR DO JOÃO?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"transactions",
+										"store",
+										"BAR DO JOÃO"
+									],
+									"query": [
+										{
+											"key": "fromDate",
+											"value": "2019-03-01T00:00:00Z"
+										},
+										{
+											"key": "toDate",
+											"value": "2019-03-31T23:59:59Z"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"startDate\": \"2019-03-01T00:00:00+00:00\",\n    \"endDate\": \"2019-03-31T23:59:59+00:00\",\n    \"totalTrsanctions\": 5,\n    \"accumulatedValue\": 125.00,\n    \"transactions\": [\n        {\n            \"id\": \"01938e6f-1111-7abc-b123-456789abcdef\",\n            \"createdOn\": \"2025-10-27T10:30:00+00:00\",\n            \"cnabFileId\": \"01938e6f-7890-7abc-b123-456789abcdef\",\n            \"transactionType\": {\n                \"id\": 3,\n                \"description\": \"Funding\",\n                \"nature\": 2\n            },\n            \"transactionDateTime\": \"2019-03-01T15:34:53+00:00\",\n            \"transactionDate\": \"2019-03-01\",\n            \"transactionTime\": \"15:34:53\",\n            \"amountCNAB\": 14200,\n            \"transactionValue\": 142.00,\n            \"beneficiary\": {\n                \"document\": \"09620676017\"\n            },\n            \"card\": {\n                \"number\": \"4753****3153\"\n            },\n            \"store\": {\n                \"name\": \"BAR DO JOÃO\",\n                \"owner\": \"JOÃO MACEDO\"\n            }\n        },\n        {\n            \"id\": \"01938e6f-2222-7abc-b123-456789abcdef\",\n            \"createdOn\": \"2025-10-27T10:30:00+00:00\",\n            \"cnabFileId\": \"01938e6f-7890-7abc-b123-456789abcdef\",\n            \"transactionType\": {\n                \"id\": 2,\n                \"description\": \"Bank Slip\",\n                \"nature\": 2\n            },\n            \"transactionDateTime\": \"2019-03-01T00:99:23Z\",\n            \"transactionDate\": \"2019-03-01\",\n            \"transactionTime\": \"00:99:23\",\n            \"amountCNAB\": 11200,\n            \"transactionValue\": 112.00,\n            \"beneficiary\": {\n                \"document\": \"09620676017\"\n            },\n            \"card\": {\n                \"number\": \"3648****0099\"\n            },\n            \"store\": {\n                \"name\": \"BAR DO JOÃO\",\n                \"owner\": \"JOÃO MACEDO\"\n            }\n        }\n    ]\n}"
+						},
+						{
+							"name": "No Content - 204",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/transactions/store/LOJA INEXISTENTE?fromDate=2019-03-01T00:00:00Z&toDate=2019-03-31T23:59:59Z",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"transactions",
+										"store",
+										"LOJA INEXISTENTE"
+									],
+									"query": [
+										{
+											"key": "fromDate",
+											"value": "2019-03-01T00:00:00Z"
+										},
+										{
+											"key": "toDate",
+											"value": "2019-03-31T23:59:59Z"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Get Transactions by Store - LOJA DO Ó - MATRIZ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 204\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/store/LOJA DO Ó - MATRIZ?fromDate=2019-03-01T00:00:00Z&toDate=2019-12-31T23:59:59Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"store",
+								"LOJA DO Ó - MATRIZ"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2019-03-01T00:00:00Z"
+								},
+								{
+									"key": "toDate",
+									"value": "2019-12-31T23:59:59Z"
+								}
+							]
+						},
+						"description": "Exemplo de consulta para a loja 'LOJA DO Ó - MATRIZ'"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transactions by Store - MERCADO DA AVENIDA",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/store/MERCADO DA AVENIDA?fromDate=2019-01-01T00:00:00Z&toDate=2019-03-01T23:59:59Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"store",
+								"MERCADO DA AVENIDA"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2019-01-01T00:00:00Z"
+								},
+								{
+									"key": "toDate",
+									"value": "2019-03-01T23:59:59Z"
+								}
+							]
+						},
+						"description": "Exemplo de consulta para todo o ano de 2019"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para consulta de transações"
+		},
+		{
+			"name": "Health Checks",
+			"item": [
+				{
+					"name": "Liveness Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status is Healthy\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql('Healthy');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/liveness",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health",
+								"liveness"
+							]
+						},
+						"description": "Verifica se a aplicação está rodando"
+					},
+					"response": []
+				},
+				{
+					"name": "Readiness Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/readiness",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health",
+								"readiness"
+							]
+						},
+						"description": "Verifica se a aplicação está pronta para receber requisições"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de health check para monitoramento"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
 }
