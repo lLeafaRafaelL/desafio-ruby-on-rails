@@ -8,9 +8,13 @@ public class TransactionStatementHandler : RequestHandler<TransactionStatementRe
 {
     private readonly ITransactionRepository _repository;
     private readonly IDtoValidator<TransactionStatementRequest> _validator;
-    public TransactionStatementHandler(ITransactionRepository repository)
+
+    public TransactionStatementHandler(
+        ITransactionRepository repository,
+        IDtoValidator<TransactionStatementRequest> validator)
     {
-        _repository = repository;
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
     }
 
     public async override Task<RequestHandlerResult<TransactionStatementResponse>> HandleAsync(TransactionStatementRequest request, CancellationToken cancellationToken)
