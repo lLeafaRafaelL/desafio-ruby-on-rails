@@ -1,3 +1,5 @@
+using ByCoders.CNAB.API.Filters;
+using ByCoders.CNAB.API.Middlewares;
 using ByCoders.CNAB.Application.DI;
 using ByCoders.CNAB.Core.Prometheus;
 using ByCoders.CNAB.Infrastructure.DI;
@@ -23,7 +25,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 var storagePath = builder.Configuration["FileStorage:BasePath"] ?? "/app/storage";
 
 // Add services to container
-builder.Services.AddControllers();
+builder.Services.AddControllers(config =>
+{ 
+    config.Filters.Add<ExceptionFilter>();
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -79,6 +84,8 @@ app.UsePrometheus(options =>
     Predicate = _ => true,
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
+
+app.UseMiddleware<CorrelationMiddleware>();
 
 try
 {

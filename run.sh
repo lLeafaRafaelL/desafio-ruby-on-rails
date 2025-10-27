@@ -3,7 +3,7 @@
 
 set -e
 
-echo "🚀 CNAB System - Automation Script"
+echo "CNAB System - Automation Script"
 echo "===================================="
 
 # Função de help
@@ -29,25 +29,25 @@ show_help() {
 
 # Docker Build
 docker_build() {
-    echo "📦 Building Docker images..."
+    echo "Building Docker images..."
     docker-compose build
-    echo "✅ Build completed!"
+    echo "Build completed!"
 }
 
 # Docker Up
 docker_up() {
-    echo "🐳 Starting containers..."
+    echo "Starting containers..."
     docker-compose up -d
     echo ""
-    echo "✅ Containers started!"
+    echo "Containers started!"
     echo ""
-    echo "📍 Endpoints:"
+    echo "   Endpoints:"
     echo "   API: http://localhost:5000"
     echo "   Swagger: http://localhost:5000/swagger"
     echo "   PostgreSQL: localhost:5432"
     echo ""
-    echo "📊 Check status: docker-compose ps"
-    echo "📋 View logs: docker-compose logs -f"
+    echo "Check status: docker-compose ps"
+    echo "View logs: docker-compose logs -f"
 }
 
 # Docker Down
@@ -65,7 +65,7 @@ docker_logs() {
 
 # Migrations
 run_migrations() {
-    echo "🗄️  Running migrations..."
+    echo "Running migrations..."
     cd ByCoders.CNAB.Infrastructure
     
     echo "Creating CNABFile migration..."
