@@ -19,7 +19,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.Debit);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
@@ -33,7 +32,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.Credit);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
@@ -47,7 +45,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.Sales);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
@@ -61,7 +58,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.LoanReceipt);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
@@ -75,7 +71,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.TEDReceipt);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
@@ -89,7 +84,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.DOCReceipt);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(100m); // Positive: Cash In
     }
@@ -107,7 +101,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.BankSlip);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(-100m); // Negative: Cash Out
     }
@@ -121,7 +114,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.Funding);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(-100m); // Negative: Cash Out
     }
@@ -135,7 +127,6 @@ public class TransactionTypesTests
             .Build();
 
         // Assert
-        transaction.TransactionTypeId.Should().Be((int)TransactionTypes.Rent);
         transaction.AmountCNAB.Should().Be(10000m);
         transaction.TransactionValue.Should().Be(-100m); // Negative: Cash Out
     }
@@ -173,7 +164,6 @@ public class TransactionTypesTests
 
         // Assert
         transaction.Should().BeOfType(expectedType);
-        transaction.TransactionTypeId.Should().Be((int)type);
     }
 
     #endregion

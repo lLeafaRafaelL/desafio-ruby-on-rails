@@ -9,7 +9,7 @@ public class Credit : Transaction
     private Credit() { }
 
     public Credit(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
-        : base(TransactionTypes.Credit, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
+        : base(cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {
     }
 

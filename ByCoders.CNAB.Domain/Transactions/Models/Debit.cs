@@ -9,7 +9,7 @@ public class Debit : Transaction
     private Debit() { }
 
     public Debit(Guid cnabFileId, DateOnly transactionDate, TimeOnly transactionTimeUtc, decimal amount, Beneficiary beneficiary, Card card, Store store)
-        : base(TransactionTypes.Debit, cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
+        : base(cnabFileId, transactionDate, transactionTimeUtc, amount, beneficiary, card, store)
     {
     }    
 }

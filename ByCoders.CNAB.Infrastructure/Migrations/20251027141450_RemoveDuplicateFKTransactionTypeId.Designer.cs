@@ -3,6 +3,7 @@ using System;
 using ByCoders.CNAB.Infrastructure.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ByCoders.CNAB.Infrastructure.Migrations
 {
     [DbContext(typeof(CNABFileDbContext))]
-    partial class CNABFileDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251027141450_RemoveDuplicateFKTransactionTypeId")]
+    partial class RemoveDuplicateFKTransactionTypeId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

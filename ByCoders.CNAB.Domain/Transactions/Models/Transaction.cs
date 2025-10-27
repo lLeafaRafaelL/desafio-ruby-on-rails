@@ -16,7 +16,6 @@ public abstract class Transaction
     }
 
     protected Transaction(
-        TransactionTypes transactionType,
         Guid cnabFileId,
         DateOnly transactionDate,
         TimeOnly transactionTimeUtc,
@@ -25,7 +24,6 @@ public abstract class Transaction
         Card card,
         Store store) : this()
     {
-        TransactionTypeId = (int)transactionType;
         CNABFileId = cnabFileId;
         TransactionDateTime = new DateTimeOffset(transactionDate.Year, transactionDate.Month, transactionDate.Day, transactionTimeUtc.Hour, transactionTimeUtc.Minute, transactionTimeUtc.Second, TimeSpan.Zero);
         AmountCNAB = amountCNAB;
@@ -40,8 +38,6 @@ public abstract class Transaction
 
     // Reference to the CNAB file
     public Guid? CNABFileId { get; internal set; }
-
-    public int TransactionTypeId { get; init; }
 
     public DateTimeOffset TransactionDateTime { get; protected set; }
     public DateOnly TransactionDate => DateOnly.FromDateTime(TransactionDateTime.Date);
