@@ -124,15 +124,8 @@ Cliente → POST /api/files → API → Salva arquivo → Retorna 202 Accepted
                     │ 4. Cria transações           │
                     │ 5. Bulk insert no DB         │
                     └──────────────────────────────┘
-2. Formato do Arquivo CNAB
-Cada linha possui 80 caracteres com posições fixas:
 
-| Campo | Posição | Tamanho | Exemplo | Descrição | |----------------|---------|---------|-----------------|------------------------------| | Tipo | 1-1 | 1 | 3 | Tipo da transação (1-9) | | Data | 2-9 | 8 | 20190301 | YYYYMMDD | | Valor | 10-19 | 10 | 0000014200 | Em centavos (142.00) | | CPF | 20-30 | 11 | 09620676017 | CPF do beneficiário | | Cartão | 31-42 | 12 | 4753****3153 | Número do cartão | | Hora | 43-48 | 6 | 153453 | HHMMSS (UTC-3) | | Dono da Loja | 49-62 | 14 | JOÃO MACEDO | Nome do representante | | Nome da Loja | 63-80 | 18 | BAR DO JOÃO | Nome da loja |
-
-3. Tipos de Transação
-| Tipo | Descrição | Natureza | Sinal | Impacto no Saldo | |------|------------------------|----------|-------|------------------| | 1 | Débito | Entrada | + | Aumenta | | 2 | Boleto | Saída | - | Diminui | | 3 | Financiamento | Saída | - | Diminui | | 4 | Crédito | Entrada | + | Aumenta | | 5 | Recebimento Empréstimo | Entrada | + | Aumenta | | 6 | Vendas | Entrada | + | Aumenta | | 7 | Recebimento TED | Entrada | + | Aumenta | | 8 | Recebimento DOC | Entrada | + | Aumenta | | 9 | Aluguel | Saída | - | Diminui |
-
-4. Consulta de Transações
+2. Consulta de Transações
 Cliente → GET /api/transactions/store/{storeName}?fromDate=...&toDate=...
             ↓
        API consulta DB
