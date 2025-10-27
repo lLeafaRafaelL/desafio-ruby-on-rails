@@ -19,8 +19,7 @@ internal class TransactionStatementRequestValidator : FluentDtoValidator<Transac
         RuleFor(x => x.EndDate)
             .NotEmpty()
             .GreaterThan(x => x.StartDate)
-            .Must(x => x > DateTime.MinValue)
-            .LessThanOrEqualTo(x => DateTime.UtcNow);
+            .Must(x => x > DateTime.MinValue);
 
         RuleFor(x => x)
             .Must(x => x.EndDate.Subtract(x.StartDate).TotalDays <= 1)

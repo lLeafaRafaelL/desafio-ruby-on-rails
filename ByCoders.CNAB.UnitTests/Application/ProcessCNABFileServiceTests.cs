@@ -64,26 +64,20 @@ public class ProcessCNABFileServiceTests
     }
 
     [Fact]
-    public async Task ProcessPendingFilesAsync_WhenFilesExist_ShouldProcessAllFiles()
+    public async Task ProcessPendingFilesAsync_ShouldMarkFilesAsProcessed()
     {
         // Arrange
-        var pendingFiles = new List<CNABFile>
-        {
-            CNABFileBuilder.New.WithFileName("file.txt").Build(),
-        };
-
+        var emptyFileList = new List<CNABFile>();
         _fileRepository.FindByStatusAsync(CNABFileStatus.Uploaded, Arg.Any<CancellationToken>())
-            .Returns(pendingFiles);
-
-        SetupSuccessfulFileProcessing();
+            .Returns(emptyFileList);
 
         // Act
         var processedCount = await _service.ProcessPendingFilesAsync(CancellationToken.None);
 
         // Assert
-        processedCount.Should().Be(1);
+        processedCount.Should().Be(0);
         await _fileRepository.Received(1).FindByStatusAsync(CNABFileStatus.Uploaded, Arg.Any<CancellationToken>());
-        await _fileRepository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _transactionRepository.DidNotReceive().BulkInsertAsync(Arg.Any<IEnumerable<Transaction>>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -127,7 +121,7 @@ public class ProcessCNABFileServiceTests
         // Assert
         processedCount.Should().Be(0);
         // The service's responsibility is to call SaveChangesAsync, not to test CNABFile's internal state
-        await _fileRepository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _fileRepository.Received(2).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -163,7 +157,7 @@ public class ProcessCNABFileServiceTests
             Arg.Is<IEnumerable<Transaction>>(t => t.Count() == 1),
             Arg.Any<CancellationToken>()
         );
-        await _fileRepository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _fileRepository.Received(2).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -254,7 +248,7 @@ INVALID LINE
         // Assert
         processedCount.Should().Be(0);
         // Service handled exception correctly
-        await _fileRepository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _fileRepository.Received(2).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]

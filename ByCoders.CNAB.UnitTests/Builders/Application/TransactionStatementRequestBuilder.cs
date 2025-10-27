@@ -69,7 +69,7 @@ public class TransactionStatementRequestBuilder
     public TransactionStatementRequestBuilder WithEndDateInPast()
     {
         _startDate = DateTimeOffset.UtcNow.AddDays(-2);
-        _endDate = DateTimeOffset.UtcNow.AddDays(-1);
+        _endDate = DateTimeOffset.UtcNow.AddDays(-3);
         return this;
     }
 
