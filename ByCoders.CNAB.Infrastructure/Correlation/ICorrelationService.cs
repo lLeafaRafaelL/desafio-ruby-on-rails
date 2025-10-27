@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ByCoders.CNAB.Infrastructure.Correlation;
 
-public interface ICorrelation
+public interface ICorrelationService
 {
     void SetCorrelationId(Guid correlationId);
     Guid GetCorrelationId();

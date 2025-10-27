@@ -10,7 +10,7 @@ public class CorrelationIdTests
     public void SetCorrelationId_WhenCalled_ShouldStoreCorrectValue()
     {
         // Arrange
-        var correlationId = new CorrelationId();
+        var correlationId = new CorrelationService();
         var expectedId = Guid.NewGuid();
 
         // Act
@@ -25,7 +25,7 @@ public class CorrelationIdTests
     public void GetCorrelationId_WhenNotSet_ShouldReturnEmptyGuid()
     {
         // Arrange
-        var correlationId = new CorrelationId();
+        var correlationId = new CorrelationService();
 
         // Act
         var result = correlationId.GetCorrelationId();
@@ -38,7 +38,7 @@ public class CorrelationIdTests
     public void SetCorrelationId_WhenCalledMultipleTimes_ShouldUpdateValue()
     {
         // Arrange
-        var correlationId = new CorrelationId();
+        var correlationId = new CorrelationService();
         var firstId = Guid.NewGuid();
         var secondId = Guid.NewGuid();
 
@@ -59,8 +59,8 @@ public class CorrelationIdTests
     public void CorrelationId_AsRecord_ShouldSupportValueEquality()
     {
         // Arrange
-        var id1 = new CorrelationId();
-        var id2 = new CorrelationId();
+        var id1 = new CorrelationService();
+        var id2 = new CorrelationService();
         var sharedGuid = Guid.NewGuid();
 
         // Act
@@ -76,7 +76,7 @@ public class CorrelationIdTests
     public void SetCorrelationId_WithEmptyGuid_ShouldStoreEmptyGuid()
     {
         // Arrange
-        var correlationId = new CorrelationId();
+        var correlationId = new CorrelationService();
 
         // Act
         correlationId.SetCorrelationId(Guid.Empty);
@@ -90,9 +90,9 @@ public class CorrelationIdTests
     public void CorrelationId_ImplementsICorrelation()
     {
         // Arrange
-        var correlationId = new CorrelationId();
+        var correlationId = new CorrelationService();
 
         // Act & Assert
-        correlationId.Should().BeAssignableTo<ICorrelation>();
+        correlationId.Should().BeAssignableTo<ICorrelationService>();
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace ByCoders.CNAB.Infrastructure.Correlation;
 
-internal record CorrelationId : ICorrelation
+internal record CorrelationService : ICorrelationService
 {
-    public CorrelationId()
+    public CorrelationService()
     {
         
     }

@@ -9,9 +9,9 @@ namespace ByCoders.CNAB.API.Filters;
 public class ExceptionFilter : IExceptionFilter
 {
     private readonly ILogger _logger;
-    private readonly ICorrelation _correlation;
+    private readonly ICorrelationService _correlation;
 
-    public ExceptionFilter(ILogger logger, ICorrelation correlation)
+    public ExceptionFilter(ILogger logger, ICorrelationService correlation)
     {
         _logger = logger;
         _correlation = correlation;

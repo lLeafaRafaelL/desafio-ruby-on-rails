@@ -12,7 +12,7 @@ public class CorrelationMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, ICorrelation correlation)
+    public async Task InvokeAsync(HttpContext context, ICorrelationService correlation)
     {
         var correlationIdHeader = context.Request.Headers[CorrelationIdHeaderName].FirstOrDefault();
 

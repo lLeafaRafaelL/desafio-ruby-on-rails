@@ -1,6 +1,7 @@
 using ByCoders.CNAB.API.Configurations;
 using ByCoders.CNAB.Domain.Files;
 using ByCoders.CNAB.Domain.Transactions;
+using ByCoders.CNAB.Infrastructure.Correlation;
 using ByCoders.CNAB.Infrastructure.EntityFrameworkCore.Configurations;
 using ByCoders.CNAB.Infrastructure.Repositories;
 using ByCoders.CNAB.Infrastructure.Storage;
@@ -17,6 +18,8 @@ public static class InfraDependencyInjection
         string connectionString)
     {
         services.AddPostgresProvider(connectionString);
+
+        services.AddScoped<ICorrelationService, CorrelationService>();
 
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<ICNABFileRepository, CNABFileRepository>();
