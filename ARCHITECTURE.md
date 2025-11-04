@@ -63,7 +63,7 @@
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔄 Fluxo de Upload
+## Fluxo de Upload
 
 ```
 1. Usuário seleciona arquivo CNAB no browser
@@ -94,7 +94,7 @@
        └─→ Atualizar status para "Processed"
 ```
 
-## 🔍 Fluxo de Consulta
+## Fluxo de Consulta
 
 ```
 1. Usuário preenche filtros (loja, datas)
