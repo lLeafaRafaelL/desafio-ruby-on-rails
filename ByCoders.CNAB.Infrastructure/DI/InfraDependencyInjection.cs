@@ -29,6 +29,8 @@ public static class InfraDependencyInjection
         services.AddHealthChecks()
                 .AddHealthcheckPostgre(connectionString);
 
+        services.AddMemoryCache();
+
         return services;
     }
 

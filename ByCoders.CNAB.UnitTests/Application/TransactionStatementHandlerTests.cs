@@ -6,6 +6,7 @@ using ByCoders.CNAB.Domain.Transactions.Models;
 using ByCoders.CNAB.UnitTests.Builders.Application;
 using ByCoders.CNAB.UnitTests.Builders.Domain;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
 using Xunit;
 
@@ -15,14 +16,15 @@ public class TransactionStatementHandlerTests
 {
     private readonly ITransactionRepository _repository;
     private readonly IDtoValidator<TransactionStatementRequest> _validator;
+    private readonly IMemoryCache _memoryCache;
     private readonly TransactionStatementHandler _handler;
 
     public TransactionStatementHandlerTests()
     {
         _repository = Substitute.For<ITransactionRepository>();
         _validator = Substitute.For<IDtoValidator<TransactionStatementRequest>>();
-
-        _handler = new TransactionStatementHandler(_repository, _validator);
+        _memoryCache = new MemoryCache(new MemoryCacheOptions());
+        _handler = new TransactionStatementHandler(_repository, _validator, _memoryCache);
     }
 
     [Fact]
@@ -112,7 +114,57 @@ public class TransactionStatementHandlerTests
         result.Value.Should().NotBeNull();
         result.Value!.TotalTrsanctions.Should().Be(3);
         result.Value.Transactions.Should().HaveCount(3);
-        result.Value.AccumulatedValue.Should().Be(300m); // (10000 + 5000 + 15000) / 100
+        result.Value.AccumulatedValue.Should().Be(300m);
+
+        _repository.Received(1).FindBy(
+            request.StoreName,
+            request.StartDate,
+            request.EndDate,
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task HandleAsync_WhenTransactionsFoundOnCache_ShouldNotFetchFromRepository()
+    {
+        // Arrange
+        var request = TransactionStatementRequestBuilder.New
+            .WithValidStoreName()
+            .WithValidPeriod()
+            .Build();
+
+        var transactions = new List<Transaction>
+        {
+            SaleBuilder.New.WithAmountCNAB(10000m).Build(),
+            DebitBuilder.New.WithAmountCNAB(5000m).Build(),
+            CreditBuilder.New.WithAmountCNAB(15000m).Build()
+        };
+
+        var response = new TransactionStatementResponse(request.StartDate, request.EndDate, transactions);
+
+        _validator.TryValidate(request).Returns(ValidationResult.Success());
+
+        _memoryCache.Set(request.IdempotencyKey, response, TimeSpan.FromMinutes(1));
+
+        // Act
+        var result = await _handler.HandleAsync(request, CancellationToken.None);
+
+        // Assert
+        result.Succeeded.Should().BeTrue();
+        result.Status.Should().Be(RequestHandlerStatus.OK);
+        result.Value.Should().NotBeNull();
+        result.Value!.TotalTrsanctions.Should().Be(3);
+        result.Value.Transactions.Should().HaveCount(3);
+        result.Value.AccumulatedValue.Should().Be(300m);
+
+        _repository.DidNotReceive().FindBy(
+            Arg.Any<string>(),
+            Arg.Any<DateTimeOffset>(),
+            Arg.Any<DateTimeOffset>(),
+            Arg.Any<CancellationToken>());
+
+        _memoryCache.TryGetValue(request.IdempotencyKey, out TransactionStatementResponse resultCache);
+        resultCache.Should().NotBeNull();
+        resultCache.Should().Be(response);
     }
 
     [Fact]
@@ -295,7 +347,7 @@ public class TransactionStatementHandlerTests
     public void Constructor_WhenRepositoryIsNull_ShouldThrowArgumentNullException()
     {
         // Arrange & Act
-        var act = () => new TransactionStatementHandler(null!, _validator);
+        var act = () => new TransactionStatementHandler(null!, _validator, _memoryCache);
 
         // Assert
         act.Should().Throw<ArgumentNullException>()
@@ -306,7 +358,7 @@ public class TransactionStatementHandlerTests
     public void Constructor_WhenValidatorIsNull_ShouldThrowArgumentNullException()
     {
         // Arrange & Act
-        var act = () => new TransactionStatementHandler(_repository, null!);
+        var act = () => new TransactionStatementHandler(_repository, null, _memoryCache);
 
         // Assert
         act.Should().Throw<ArgumentNullException>()
