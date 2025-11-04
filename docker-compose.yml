@@ -1,6 +1,27 @@
 version: '3.8'
 
 services:
+  # Frontend React - Interface do usuário
+  cnab-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.Frontend
+      args:
+        REACT_APP_API_URL: http://localhost:5000
+    container_name: cnab-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - cnab-api
+    networks:
+      - cnab-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # API - Upload e consulta de arquivos/transações
   cnab-api:
     deploy:

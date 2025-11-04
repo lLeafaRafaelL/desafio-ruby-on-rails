@@ -16,3 +16,4 @@ obj/
 ## Project-specific (legacy - covered by patterns above)
 /ByCoders.CNAB.AppService/obj
 /ByCoders.CNAB.AppService/bin
+/cnab-react/node_modules
