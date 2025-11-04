@@ -201,7 +201,7 @@ docker compose logs -f cnab-api
 docker compose logs -f cnab-frontend
 ```
 
-## 🔍 Troubleshooting
+##  Troubleshooting
 
 ### Frontend não consegue conectar na API
 
